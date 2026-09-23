@@ -1,7 +1,7 @@
-import { useGetHealthQuery } from '../store/api/baseApi'
+import { useHomePage } from './useHomePage'
 
 export const HomePage = () => {
-  const { data, error, isLoading } = useGetHealthQuery()
+  const { data, error, isLoading } = useHomePage()
 
   return (
     <div className="space-y-4">

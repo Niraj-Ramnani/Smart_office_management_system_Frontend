@@ -1,2 +1,2 @@
-// Component export barrel for shared UI components
-export {}
+export { LoginButton } from './auth/LoginButton'
+export { LogoutButton } from './auth/LogoutButton'
