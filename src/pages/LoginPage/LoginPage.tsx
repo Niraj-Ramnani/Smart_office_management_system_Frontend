@@ -1,5 +1,6 @@
 import { LoginButton } from '../../components/auth/LoginButton'
 import { useLoginPage } from './useLoginPage'
+import logo from '../../assets/logo.png'
 
 export const LoginPage = () => {
   const {
@@ -14,27 +15,10 @@ export const LoginPage = () => {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-blue-600 text-white shadow-md mb-2">
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Smart Office Management
-          </h1>
+          <img src={logo} alt="ITT DeskFlow Logo" className="h-16 w-auto mx-auto object-contain mb-2" />
+
           <p className="text-sm text-slate-500 max-w-sm mx-auto">
-            Workplace seating allocation and resource scheduling. Sign in with your corporate account to continue.
+            Smart seating allocation and workplace resource scheduling. Sign in with your corporate account to continue.
           </p>
         </div>
 

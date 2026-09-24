@@ -9,9 +9,13 @@ import type { RootState } from '../store/store'
 
 interface ProtectedRouteProps {
   requiredRole?: string
+  allowedRoles?: string[]
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  requiredRole,
+  allowedRoles,
+}) => {
   const isMsalAuthenticated = useIsAuthenticated()
   const { inProgress } = useMsal()
   const location = useLocation()
@@ -68,15 +72,28 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requiredRole }) 
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  if (requiredRole && user && user.role !== requiredRole) {
-    return (
-      <div className="p-8 text-center space-y-3">
-        <h2 className="text-xl font-bold text-red-600">Access Restricted</h2>
-        <p className="text-sm text-slate-600">
-          You need the <span className="font-semibold">{requiredRole}</span> role to access this section.
-        </p>
-      </div>
-    )
+  if (user) {
+    if (requiredRole && user.role !== requiredRole) {
+      return (
+        <div className="p-8 text-center space-y-3">
+          <h2 className="text-xl font-bold text-red-600">Access Restricted</h2>
+          <p className="text-sm text-slate-600">
+            You need the <span className="font-semibold">{requiredRole}</span> role to access this section.
+          </p>
+        </div>
+      )
+    }
+
+    if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
+      return (
+        <div className="p-8 text-center space-y-3">
+          <h2 className="text-xl font-bold text-red-600">Access Restricted</h2>
+          <p className="text-sm text-slate-600">
+            Your role (<span className="font-semibold">{user.role}</span>) does not have access to this section.
+          </p>
+        </div>
+      )
+    }
   }
 
   return <Outlet />

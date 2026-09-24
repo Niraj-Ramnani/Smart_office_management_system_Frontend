@@ -23,7 +23,7 @@ export const extractErrorMessage = (err: unknown, fallback = 'An unexpected erro
   if (typeof apiError?.data?.message === 'string') return apiError.data.message
 
   if (apiError?.status === HTTP_STATUS.FORBIDDEN) {
-    return 'Your Microsoft account is not registered in the Smart Office system. Please contact your administrator.'
+    return 'Your Microsoft account is not registered in the ITT DeskFlow system. Please contact your administrator.'
   }
   if (apiError?.status === HTTP_STATUS.UNAUTHORIZED) {
     return 'Authentication failed. Please verify your Microsoft login credentials.'

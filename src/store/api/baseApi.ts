@@ -1,11 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getAccessToken } from '../../services/authService'
-import type { UserProfile } from '../slices/authSlice'
+import type { HealthResponse, UserProfile } from '../../types'
 
-export interface HealthResponse {
-  status: string
-}
-
+export type { HealthResponse }
 export type UserMeResponse = UserProfile
 
 const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
@@ -26,7 +23,7 @@ export const baseApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['User'],
+  tagTypes: ['User', 'Building', 'Floor', 'Team', 'Employee', 'Role'],
   endpoints: (builder) => ({
     getHealth: builder.query<HealthResponse, void>({
       query: () => '/health',
