@@ -13,10 +13,6 @@ export interface FloorFormModalProps {
   setName: (val: string) => void
   floorNumber: number
   setFloorNumber: (val: number) => void
-  mapWidth: number
-  setMapWidth: (val: number) => void
-  mapHeight: number
-  setMapHeight: (val: number) => void
   formError: string | null
   isSubmitting: boolean
   onSubmit: (e: React.FormEvent) => void
@@ -33,10 +29,6 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
   setName,
   floorNumber,
   setFloorNumber,
-  mapWidth,
-  setMapWidth,
-  mapHeight,
-  setMapHeight,
   formError,
   isSubmitting,
   onSubmit,
@@ -84,7 +76,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
             <input
               type="text"
               required
-              placeholder="e.g. Executive Wing / Floor 1"
+              placeholder="e.g. Ground Floor / Floor 1"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -93,7 +85,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
-              Floor Number (Integer) *
+              Floor Level / Number (e.g. 0 for Ground, 1 for 1st) *
             </label>
             <input
               type="number"
@@ -102,35 +94,6 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
               onChange={(e) => setFloorNumber(Number(e.target.value))}
               className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Map Width (px)
-              </label>
-              <input
-                type="number"
-                min={100}
-                max={10000}
-                value={mapWidth}
-                onChange={(e) => setMapWidth(Number(e.target.value))}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Map Height (px)
-              </label>
-              <input
-                type="number"
-                min={100}
-                max={10000}
-                value={mapHeight}
-                onChange={(e) => setMapHeight(Number(e.target.value))}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
           </div>
 
           <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
@@ -146,7 +109,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
               disabled={isSubmitting}
               className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? 'Saving...' : editingFloor ? 'Update' : 'Create'}
+              {isSubmitting ? 'Saving...' : editingFloor ? 'Update Floor' : 'Create Floor'}
             </button>
           </div>
         </form>

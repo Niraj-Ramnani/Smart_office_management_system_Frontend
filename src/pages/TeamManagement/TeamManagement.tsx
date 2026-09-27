@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTeamManagement } from './useTeamManagement'
 import {
+  TeamDetailModal,
   TeamFormModal,
   TeamRequirementNotice,
   TeamTable,
@@ -16,6 +17,7 @@ import {
 export const TeamManagement: React.FC = () => {
   const {
     isAdmin,
+    isManager,
     teams,
     rawCount,
     employees,
@@ -46,6 +48,11 @@ export const TeamManagement: React.FC = () => {
     setDeleteConfirmId,
     handleDelete,
     isDeleting,
+    selectedTeamForDetails,
+    openDetailModal,
+    closeDetailModal,
+    handleAddMembers,
+    handleRemoveMember,
   } = useTeamManagement()
 
   return (
@@ -114,10 +121,26 @@ export const TeamManagement: React.FC = () => {
         <TeamTable
           teams={teams}
           isAdmin={isAdmin}
+          onOpenTeam={openDetailModal}
           onEdit={openEditModal}
           onDelete={(id) => setDeleteConfirmId(id)}
         />
       </TableCard>
+
+      <TeamDetailModal
+        isOpen={selectedTeamForDetails !== null}
+        onClose={closeDetailModal}
+        team={selectedTeamForDetails}
+        allEmployees={employees}
+        isAdmin={isAdmin}
+        isManager={isManager}
+        onEditTeam={(t) => {
+          closeDetailModal()
+          openEditModal(t)
+        }}
+        onAddMembers={handleAddMembers}
+        onRemoveMember={handleRemoveMember}
+      />
 
       <TeamFormModal
         isOpen={modalOpen}

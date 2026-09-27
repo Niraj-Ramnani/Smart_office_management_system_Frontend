@@ -3,17 +3,18 @@ import { useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import type { RootState } from '../../store/store'
 import {
-  useAssignUserEmployeeMutation,
   useGetRolesQuery,
   useGetUsersQuery,
-  useProvisionUserMutation,
   useUpdateUserRoleMutation,
   useUpdateUserStatusMutation,
 } from '../../store/api/userManagementApi'
-import { useGetEmployeesQuery } from '../../store/api/employeeApi'
-import type { UserManagement, UserProvisionPayload } from '../../types'
+import {
+  useCreateEmployeeMutation,
+  useGetEmployeesQuery,
+} from '../../store/api/employeeApi'
+import { useGetTeamsQuery } from '../../store/api/teamApi'
 import { extractErrorMessage } from '../../utils/authErrors'
-import { useActionFeedback, useEntityModal } from '../../hooks'
+import { useActionFeedback } from '../../hooks'
 
 export const useUserManagement = () => {
   const user = useSelector((state: RootState) => state.auth.user)
@@ -34,68 +35,92 @@ export const useUserManagement = () => {
 
   const { data: users = [], isLoading, error: fetchError, refetch } = useGetUsersQuery()
   const { data: roles = [] } = useGetRolesQuery()
-  const { data: employees = [] } = useGetEmployeesQuery()
+  const { data: employees = [], refetch: refetchEmployees } = useGetEmployeesQuery()
+  const { data: teams = [] } = useGetTeamsQuery()
 
-  const [provisionUserMutation, { isLoading: isProvisioning }] = useProvisionUserMutation()
-  const [assignEmployee, { isLoading: isAssigning }] = useAssignUserEmployeeMutation()
   const [updateRole, { isLoading: isUpdatingRole }] = useUpdateUserRoleMutation()
   const [updateStatus, { isLoading: isUpdatingStatus }] = useUpdateUserStatusMutation()
+  const [createEmployee, { isLoading: isOnboarding }] = useCreateEmployeeMutation()
 
-  const modal = useEntityModal<UserManagement>()
   const feedback = useActionFeedback()
 
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<number | null>(null)
-  const [provisionModalOpen, setProvisionModalOpen] = useState(false)
-  const [provisionError, setProvisionError] = useState<string | null>(null)
+  const [onboardModalOpen, setOnboardModalOpen] = useState(false)
   const [csvModalOpen, setCsvModalOpen] = useState(false)
+  const [onboardError, setOnboardError] = useState<string | null>(null)
 
-  const handleOpenProvisionModal = () => {
-    setProvisionError(null)
-    setProvisionModalOpen(true)
+  const [employeeCode, setEmployeeCode] = useState('')
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [designation, setDesignation] = useState('')
+  const [department, setDepartment] = useState('')
+  const [employmentType, setEmploymentType] = useState('FULL_TIME')
+  const [employeeStatus, setEmployeeStatus] = useState('ACTIVE')
+  const [managerId, setManagerId] = useState<number | undefined>(undefined)
+  const [teamId, setTeamId] = useState<number | undefined>(undefined)
+  const [roleName, setRoleName] = useState('Employee')
+
+  const resetOnboardForm = () => {
+    setEmployeeCode('')
+    setFirstName('')
+    setLastName('')
+    setEmail('')
+    setPhone('')
+    setDesignation('')
+    setDepartment('')
+    setEmploymentType('FULL_TIME')
+    setEmployeeStatus('ACTIVE')
+    setManagerId(undefined)
+    setTeamId(undefined)
+    setRoleName('Employee')
+    setOnboardError(null)
   }
 
-  const handleCloseProvisionModal = () => {
-    setProvisionError(null)
-    setProvisionModalOpen(false)
+  const openOnboardModal = () => {
+    resetOnboardForm()
+    setOnboardModalOpen(true)
   }
 
-  const handleProvisionUser = async (payload: UserProvisionPayload) => {
-    setProvisionError(null)
+  const closeOnboardModal = () => {
+    resetOnboardForm()
+    setOnboardModalOpen(false)
+  }
+
+  const handleOnboardSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setOnboardError(null)
     feedback.clearFeedback()
-    try {
-      const res = await provisionUserMutation(payload).unwrap()
-      feedback.notifySuccess(`User '${res.email}' successfully provisioned`)
-      handleCloseProvisionModal()
-    } catch (err) {
-      setProvisionError(extractErrorMessage(err, 'Failed to provision user'))
-    }
-  }
-
-  const openAssignModal = (u: UserManagement) => {
-    setSelectedEmployeeId(u.employee_id)
-    modal.openEdit(u)
-  }
-
-  const closeAssignModal = () => {
-    modal.close()
-    setSelectedEmployeeId(null)
-  }
-
-  const handleSaveEmployeeLink = async () => {
-    if (!modal.editingItem) return
-    modal.setFormError(null)
-    feedback.clearFeedback()
 
     try {
-      await assignEmployee({
-        userId: modal.editingItem.id,
-        employeeId: selectedEmployeeId,
+      await createEmployee({
+        employee_code: employeeCode.trim(),
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.trim() || undefined,
+        designation: designation.trim(),
+        department: department.trim(),
+        employment_type: employmentType,
+        employee_status: employeeStatus,
+        manager_id: managerId,
+        team_id: teamId,
+        role_name: roleName,
       }).unwrap()
-      feedback.notifySuccess(`Employee link updated for user '${modal.editingItem.email}'`)
-      closeAssignModal()
+
+      feedback.notifySuccess(`User & Employee '${firstName} ${lastName}' successfully onboarded with role '${roleName}'`)
+      closeOnboardModal()
+      refetch()
+      refetchEmployees()
     } catch (err) {
-      modal.setFormError(extractErrorMessage(err, 'Failed to link employee'))
+      setOnboardError(extractErrorMessage(err, 'Failed to onboard employee and user'))
     }
+  }
+
+  const handleCsvSuccess = (count: number) => {
+    feedback.notifySuccess(`Successfully imported ${count} employees/users from CSV`)
+    refetch()
+    refetchEmployees()
   }
 
   const handleRoleChange = async (userId: number, roleName: string) => {
@@ -143,22 +168,40 @@ export const useUserManagement = () => {
     setActionSuccess: feedback.setActionSuccess,
     handleRoleChange,
     handleToggleActive,
-    assignModalUser: modal.editingItem,
-    openAssignModal,
-    closeAssignModal,
-    selectedEmployeeId,
-    setSelectedEmployeeId,
-    handleSaveEmployeeLink,
-    modalError: modal.formError,
-    isSubmitting: isAssigning || isUpdatingRole || isUpdatingStatus,
-    provisionModalOpen,
-    setProvisionModalOpen,
-    openProvisionModal: handleOpenProvisionModal,
-    closeProvisionModal: handleCloseProvisionModal,
-    handleProvisionUser,
-    provisionError,
-    isProvisioning,
+    isSubmitting: isUpdatingRole || isUpdatingStatus,
+    teams,
+    onboardModalOpen,
+    openOnboardModal,
+    closeOnboardModal,
+    handleOnboardSubmit,
+    isOnboarding,
+    onboardError,
     csvModalOpen,
     setCsvModalOpen,
+    handleCsvSuccess,
+    employeeCode,
+    setEmployeeCode,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    phone,
+    setPhone,
+    designation,
+    setDesignation,
+    department,
+    setDepartment,
+    employmentType,
+    setEmploymentType,
+    employeeStatus,
+    setEmployeeStatus,
+    managerId,
+    setManagerId,
+    teamId,
+    setTeamId,
+    roleName,
+    setRoleName,
   }
 }

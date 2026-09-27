@@ -8,7 +8,7 @@ export const HomePage: React.FC = () => {
     totalFloors,
     totalEmployees,
     activeEmployees,
-    unlinkedUsers,
+    activeUsers,
     totalUsers,
     isLoading,
   } = useHomePage()
@@ -60,16 +60,11 @@ export const HomePage: React.FC = () => {
 
           <StatCard
             to="/users"
-            label="Pending Links"
+            label="User Accounts"
             linkLabel="Users & Roles →"
-            value={unlinkedUsers}
-            subValue={`unlinked of ${totalUsers}`}
-            description={
-              unlinkedUsers > 0
-                ? 'App users awaiting employee profile linkage'
-                : 'All application accounts linked to employees'
-            }
-            valueClassName={unlinkedUsers > 0 ? 'text-amber-600' : 'text-slate-900'}
+            value={totalUsers}
+            subValue={`${activeUsers} active`}
+            description="Active accounts and access permissions"
           />
         </div>
       )}

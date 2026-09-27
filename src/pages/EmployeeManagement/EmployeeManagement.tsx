@@ -1,5 +1,4 @@
 import {
-  EmployeeCsvModal,
   EmployeeFilterBar,
   EmployeeFormModal,
   EmployeeTable,
@@ -28,9 +27,6 @@ export const EmployeeManagement: React.FC = () => {
     selectedStatus,
     setSelectedStatus,
     modalOpen,
-    csvModalOpen,
-    setCsvModalOpen,
-    openCreateModal,
     openEditModal,
     closeModal,
     handleSubmit,
@@ -57,6 +53,8 @@ export const EmployeeManagement: React.FC = () => {
     setManagerId,
     teamId,
     setTeamId,
+    roleName,
+    setRoleName,
     formError,
     actionError,
     actionSuccess,
@@ -78,26 +76,6 @@ export const EmployeeManagement: React.FC = () => {
       <PageHeader
         title="Employee Directory"
         subtitle="Manage organization staff, roles, reporting lines, and departmental teams."
-        action={
-          isAdmin && (
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setCsvModalOpen(true)}
-                className="inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 shadow-xs transition-colors cursor-pointer"
-              >
-                Bulk CSV Import
-              </button>
-              <button
-                type="button"
-                onClick={openCreateModal}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-colors cursor-pointer"
-              >
-                + Add Employee
-              </button>
-            </div>
-          )
-        }
       />
 
       <NotificationBanner
@@ -129,18 +107,7 @@ export const EmployeeManagement: React.FC = () => {
         emptyDescription={
           searchTerm || selectedDepartment || selectedTeamId || selectedStatus
             ? 'Try adjusting your filters to see more results.'
-            : 'Get started by creating your organization’s first employee.'
-        }
-        emptyAction={
-          isAdmin && !searchTerm && (
-            <button
-              type="button"
-              onClick={openCreateModal}
-              className="mt-2 inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer"
-            >
-              + Add Employee
-            </button>
-          )
+            : 'Employees will appear here once onboarded in Users & Roles or authenticated via SSO.'
         }
       >
         <EmployeeTable
@@ -183,6 +150,8 @@ export const EmployeeManagement: React.FC = () => {
         employees={employees}
         employeeStatus={employeeStatus}
         setEmployeeStatus={setEmployeeStatus}
+        roleName={roleName}
+        setRoleName={setRoleName}
       />
 
       <ConfirmDialog
@@ -194,14 +163,6 @@ export const EmployeeManagement: React.FC = () => {
         confirmText="Deactivate"
         loadingText="Deactivating..."
         isLoading={isSubmitting}
-      />
-
-      <EmployeeCsvModal
-        isOpen={csvModalOpen}
-        onClose={() => setCsvModalOpen(false)}
-        onSuccess={(count) => {
-          setActionSuccess(`Successfully imported ${count} employees from CSV.`)
-        }}
       />
     </div>
   )

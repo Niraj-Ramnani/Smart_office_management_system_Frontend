@@ -2,9 +2,11 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import type { RootState } from '../../store/store'
 import {
+  useAddTeamMembersMutation,
   useCreateTeamMutation,
   useDeleteTeamMutation,
   useGetTeamsQuery,
+  useRemoveTeamMemberMutation,
   useUpdateTeamMutation,
 } from '../../store/api/teamApi'
 import { useGetEmployeesQuery } from '../../store/api/employeeApi'
@@ -15,6 +17,7 @@ import { useActionFeedback, useConfirmDialog, useEntityModal } from '../../hooks
 export const useTeamManagement = () => {
   const user = useSelector((state: RootState) => state.auth.user)
   const isAdmin = user?.role === 'Admin'
+  const isManager = user?.role === 'Manager'
 
   const { data: teams = [], isLoading, error: fetchError, refetch } = useGetTeamsQuery()
   const { data: employees = [], isLoading: isLoadingEmployees } = useGetEmployeesQuery()
@@ -22,8 +25,11 @@ export const useTeamManagement = () => {
   const [createTeam, { isLoading: isCreating }] = useCreateTeamMutation()
   const [updateTeam, { isLoading: isUpdating }] = useUpdateTeamMutation()
   const [deleteTeam, { isLoading: isDeleting }] = useDeleteTeamMutation()
+  const [addTeamMembers] = useAddTeamMembersMutation()
+  const [removeTeamMember] = useRemoveTeamMemberMutation()
 
   const [searchTerm, setSearchTerm] = useState('')
+  const [detailTeamId, setDetailTeamId] = useState<number | null>(null)
   const modal = useEntityModal<Team>()
   const confirm = useConfirmDialog<number>()
   const feedback = useActionFeedback()
@@ -99,6 +105,40 @@ export const useTeamManagement = () => {
     }
   }
 
+  const openDetailModal = (t: Team) => {
+    setDetailTeamId(t.id)
+  }
+
+  const closeDetailModal = () => {
+    setDetailTeamId(null)
+  }
+
+  const handleAddMembers = async (teamId: number, employeeIds: number[]) => {
+    feedback.clearFeedback()
+    try {
+      await addTeamMembers({ teamId, employeeIds }).unwrap()
+      feedback.notifySuccess(
+        `Added ${employeeIds.length} member${employeeIds.length === 1 ? '' : 's'} to team`
+      )
+    } catch (err) {
+      const msg = extractErrorMessage(err, 'Failed to add members to team')
+      feedback.setActionError(msg)
+      throw new Error(msg)
+    }
+  }
+
+  const handleRemoveMember = async (teamId: number, employeeId: number) => {
+    feedback.clearFeedback()
+    try {
+      await removeTeamMember({ teamId, employeeId }).unwrap()
+      feedback.notifySuccess('Member removed from team')
+    } catch (err) {
+      const msg = extractErrorMessage(err, 'Failed to remove member from team')
+      feedback.setActionError(msg)
+      throw new Error(msg)
+    }
+  }
+
   const filteredTeams = teams.filter(
     (t) =>
       t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -106,8 +146,13 @@ export const useTeamManagement = () => {
       (t.manager_name && t.manager_name.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
+  const selectedTeamForDetails = detailTeamId
+    ? teams.find((t) => t.id === detailTeamId) || null
+    : null
+
   return {
     isAdmin,
+    isManager,
     teams: filteredTeams,
     rawCount: teams.length,
     employees,
@@ -139,5 +184,11 @@ export const useTeamManagement = () => {
     setDeleteConfirmId: confirm.setConfirmTarget,
     handleDelete,
     isDeleting,
+    selectedTeamForDetails,
+    openDetailModal,
+    closeDetailModal,
+    handleAddMembers,
+    handleRemoveMember,
   }
 }
+

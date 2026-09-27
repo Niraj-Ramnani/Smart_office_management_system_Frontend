@@ -1,5 +1,4 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import type { Employee } from '../../types'
 
 export interface EmployeeTableProps {
@@ -17,7 +16,6 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
   onToggleStatus,
   onDeactivate,
 }) => {
-  const navigate = useNavigate()
 
   return (
     <table className="w-full text-left text-sm text-slate-600">
@@ -28,7 +26,7 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
           <th className="px-5 py-3.5">Designation & Dept</th>
           <th className="px-5 py-3.5">Team & Manager</th>
           <th className="px-5 py-3.5 text-center">Status</th>
-          <th className="px-5 py-3.5 text-center">App User</th>
+          <th className="px-5 py-3.5 text-center">App Role</th>
           {isAdmin && <th className="px-5 py-3.5 text-right">Actions</th>}
         </tr>
       </thead>
@@ -75,46 +73,30 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
               </span>
             </td>
             <td className="px-5 py-4 text-center">
-              {emp.is_user_linked ? (
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate(`/users?search=${encodeURIComponent(emp.email)}`)
-                  }
-                  title="View linked user in Users & Roles"
-                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 hover:text-blue-800 transition-colors cursor-pointer"
+              {emp.role_name ? (
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                    emp.role_name === 'Admin'
+                      ? 'bg-purple-50 text-purple-700 border-purple-200'
+                      : emp.role_name === 'Manager'
+                      ? 'bg-blue-50 text-blue-700 border-blue-200'
+                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  }`}
                 >
-                  Linked • View user →
-                </button>
+                  {emp.role_name}
+                </span>
               ) : (
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate(`/users?search=${encodeURIComponent(emp.email)}`)
-                  }
-                  title="Find or link user account in Users & Roles"
-                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium text-slate-500 bg-slate-100 border border-slate-200 hover:bg-slate-200 hover:text-slate-700 transition-colors cursor-pointer"
-                >
-                  Not linked • Link
-                </button>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                  Employee
+                </span>
               )}
             </td>
             {isAdmin && (
               <td className="px-5 py-4 text-right space-x-2">
                 <button
                   type="button"
-                  onClick={() =>
-                    navigate(`/users?search=${encodeURIComponent(emp.email)}`)
-                  }
-                  title="Link or view user account"
-                  className="text-xs font-medium text-slate-600 hover:text-blue-600 cursor-pointer"
-                >
-                  {emp.is_user_linked ? 'View user' : 'Link user'}
-                </button>
-                <button
-                  type="button"
                   onClick={() => onEdit(emp)}
-                  className="text-xs font-medium text-blue-600 hover:text-blue-800 cursor-pointer"
+                  className="text-xs font-semibold text-blue-600 hover:text-blue-800 cursor-pointer"
                 >
                   Edit
                 </button>
@@ -127,7 +109,11 @@ export const EmployeeTable: React.FC<EmployeeTableProps> = ({
                       onToggleStatus(emp)
                     }
                   }}
-                  className="text-xs font-medium text-slate-600 hover:text-slate-800 cursor-pointer"
+                  className={`text-xs font-medium cursor-pointer ${
+                    emp.employee_status === 'ACTIVE'
+                      ? 'text-red-600 hover:text-red-800'
+                      : 'text-slate-600 hover:text-slate-800'
+                  }`}
                 >
                   {emp.employee_status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
                 </button>

@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import type { RootState } from '../../store/store'
 import {
-  useCreateEmployeeMutation,
   useDeleteEmployeeMutation,
   useGetEmployeesQuery,
   useUpdateEmployeeMutation,
@@ -49,12 +48,10 @@ export const useEmployeeManagement = () => {
 
   const { data: teams = [] } = useGetTeamsQuery()
 
-  const [createEmployee, { isLoading: isCreating }] = useCreateEmployeeMutation()
   const [updateEmployee, { isLoading: isUpdating }] = useUpdateEmployeeMutation()
   const [updateEmployeeStatus, { isLoading: isUpdatingStatus }] = useUpdateEmployeeStatusMutation()
   const [deleteEmployee, { isLoading: isDeleting }] = useDeleteEmployeeMutation()
 
-  const [csvModalOpen, setCsvModalOpen] = useState(false)
   const modal = useEntityModal<Employee>()
   const confirm = useConfirmDialog<number>()
   const feedback = useActionFeedback()
@@ -70,21 +67,7 @@ export const useEmployeeManagement = () => {
   const [employeeStatus, setEmployeeStatus] = useState('ACTIVE')
   const [managerId, setManagerId] = useState<number | undefined>(undefined)
   const [teamId, setTeamId] = useState<number | undefined>(undefined)
-
-  const openCreateModal = () => {
-    setEmployeeCode('')
-    setFirstName('')
-    setLastName('')
-    setEmail('')
-    setPhone('')
-    setDesignation('')
-    setDepartment('')
-    setEmploymentType('Full-Time')
-    setEmployeeStatus('ACTIVE')
-    setManagerId(undefined)
-    setTeamId(undefined)
-    modal.openCreate()
-  }
+  const [roleName, setRoleName] = useState('Employee')
 
   const openEditModal = (emp: Employee) => {
     setEmployeeCode(emp.employee_code)
@@ -98,6 +81,7 @@ export const useEmployeeManagement = () => {
     setEmployeeStatus(emp.employee_status)
     setManagerId(emp.manager_id || undefined)
     setTeamId(emp.team_id || undefined)
+    setRoleName(emp.role_name || 'Employee')
     modal.openEdit(emp)
   }
 
@@ -126,23 +110,9 @@ export const useEmployeeManagement = () => {
           employee_status: employeeStatus,
           manager_id: managerId || null,
           team_id: teamId || null,
+          role_name: roleName,
         }).unwrap()
         feedback.notifySuccess(`Employee '${firstName} ${lastName}' updated successfully`)
-      } else {
-        await createEmployee({
-          employee_code: employeeCode.trim(),
-          first_name: firstName.trim(),
-          last_name: lastName.trim(),
-          email: email.trim().toLowerCase(),
-          phone: phone.trim() || null,
-          designation: designation.trim(),
-          department: department.trim(),
-          employment_type: employmentType,
-          employee_status: employeeStatus,
-          manager_id: managerId || null,
-          team_id: teamId || null,
-        }).unwrap()
-        feedback.notifySuccess(`Employee '${firstName} ${lastName}' created successfully`)
       }
       modal.close()
     } catch (err) {
@@ -189,9 +159,6 @@ export const useEmployeeManagement = () => {
     selectedStatus,
     setSelectedStatus,
     modalOpen: modal.isOpen,
-    csvModalOpen,
-    setCsvModalOpen,
-    openCreateModal,
     openEditModal,
     closeModal: modal.close,
     handleSubmit,
@@ -218,12 +185,14 @@ export const useEmployeeManagement = () => {
     setManagerId,
     teamId,
     setTeamId,
+    roleName,
+    setRoleName,
     formError: modal.formError,
     actionError: feedback.actionError,
     actionSuccess: feedback.actionSuccess,
     setActionError: feedback.setActionError,
     setActionSuccess: feedback.setActionSuccess,
-    isSubmitting: isCreating || isUpdating || isUpdatingStatus || isDeleting,
+    isSubmitting: isUpdating || isUpdatingStatus || isDeleting,
     deactivateConfirmId: confirm.confirmTarget,
     setDeactivateConfirmId: confirm.setConfirmTarget,
     handleDeactivate,

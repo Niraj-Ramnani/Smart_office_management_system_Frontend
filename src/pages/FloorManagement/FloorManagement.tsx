@@ -33,10 +33,6 @@ export const FloorManagement: React.FC = () => {
     setName,
     floorNumber,
     setFloorNumber,
-    mapWidth,
-    setMapWidth,
-    mapHeight,
-    setMapHeight,
     formError,
     actionError,
     actionSuccess,
@@ -124,10 +120,6 @@ export const FloorManagement: React.FC = () => {
         setName={setName}
         floorNumber={floorNumber}
         setFloorNumber={setFloorNumber}
-        mapWidth={mapWidth}
-        setMapWidth={setMapWidth}
-        mapHeight={mapHeight}
-        setMapHeight={setMapHeight}
         formError={formError}
         isSubmitting={isSubmitting}
         onSubmit={handleSubmit}

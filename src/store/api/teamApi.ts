@@ -43,6 +43,29 @@ export const teamApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Team', id: 'LIST' }],
     }),
+    addTeamMembers: builder.mutation<Team, { teamId: number; employeeIds: number[] }>({
+      query: ({ teamId, employeeIds }) => ({
+        url: `/teams/${teamId}/members`,
+        method: 'POST',
+        body: { employee_ids: employeeIds },
+      }),
+      invalidatesTags: (_, __, { teamId }) => [
+        { type: 'Team', id: teamId },
+        { type: 'Team', id: 'LIST' },
+        { type: 'Employee', id: 'LIST' },
+      ],
+    }),
+    removeTeamMember: builder.mutation<Team, { teamId: number; employeeId: number }>({
+      query: ({ teamId, employeeId }) => ({
+        url: `/teams/${teamId}/members/${employeeId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_, __, { teamId }) => [
+        { type: 'Team', id: teamId },
+        { type: 'Team', id: 'LIST' },
+        { type: 'Employee', id: 'LIST' },
+      ],
+    }),
   }),
 })
 
@@ -51,4 +74,6 @@ export const {
   useCreateTeamMutation,
   useUpdateTeamMutation,
   useDeleteTeamMutation,
+  useAddTeamMembersMutation,
+  useRemoveTeamMemberMutation,
 } = teamApi

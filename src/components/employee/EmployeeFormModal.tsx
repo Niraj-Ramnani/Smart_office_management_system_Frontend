@@ -33,6 +33,8 @@ export interface EmployeeFormModalProps {
   employees: Employee[]
   employeeStatus: string
   setEmployeeStatus: (val: string) => void
+  roleName: string
+  setRoleName: (val: string) => void
 }
 
 export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
@@ -66,12 +68,19 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
   employees,
   employeeStatus,
   setEmployeeStatus,
+  roleName,
+  setRoleName,
 }) => {
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={editingEmployee ? 'Edit Employee Record' : 'Register New Employee'}
+      title={editingEmployee ? 'Edit Employee Record' : 'Onboard New Employee'}
+      subtitle={
+        editingEmployee
+          ? 'Update organizational details and permissions'
+          : 'Create employee and configure application access in a single step'
+      }
       maxWidth="lg"
     >
       <div className="space-y-4">
@@ -143,7 +152,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Email Address *
+                Corporate Email (Microsoft Entra ID) *
               </label>
               <input
                 type="email"
@@ -153,7 +162,31 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-xs"
               />
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                Matches their Microsoft Entra sign-in.
+              </p>
             </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Application Access Role *
+              </label>
+              <select
+                required
+                value={roleName}
+                onChange={(e) => setRoleName(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Employee">Employee (Desk Requests)</option>
+                <option value="Manager">Manager (Team Approvals)</option>
+                <option value="Admin">Admin (Full System Operations)</option>
+              </select>
+              <p className="text-[10px] text-slate-400 mt-0.5">
+                Application authorization role.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">
                 Phone Number
@@ -165,6 +198,19 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 onChange={(e) => setPhone(e.target.value)}
                 className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
               />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Status
+              </label>
+              <select
+                value={employeeStatus}
+                onChange={(e) => setEmployeeStatus(e.target.value)}
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+              </select>
             </div>
           </div>
 
@@ -240,22 +286,6 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
             </div>
           </div>
 
-          {editingEmployee && (
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">
-                Status
-              </label>
-              <select
-                value={employeeStatus}
-                onChange={(e) => setEmployeeStatus(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="ACTIVE">ACTIVE</option>
-                <option value="INACTIVE">INACTIVE</option>
-              </select>
-            </div>
-          )}
-
           <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
             <button
               type="button"
@@ -269,7 +299,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
               disabled={isSubmitting}
               className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? 'Saving...' : editingEmployee ? 'Update' : 'Create'}
+              {isSubmitting ? 'Saving...' : editingEmployee ? 'Update Profile' : 'Onboard Employee'}
             </button>
           </div>
         </form>

@@ -50,15 +50,11 @@ export const useFloorManagement = () => {
   const [buildingId, setBuildingId] = useState<number>(0)
   const [name, setName] = useState('')
   const [floorNumber, setFloorNumber] = useState<number>(1)
-  const [mapWidth, setMapWidth] = useState<number>(1000)
-  const [mapHeight, setMapHeight] = useState<number>(800)
 
   const openCreateModal = () => {
     setBuildingId(selectedBuildingId || (buildings.length > 0 ? buildings[0].id : 0))
     setName('')
     setFloorNumber(1)
-    setMapWidth(1000)
-    setMapHeight(800)
     modal.openCreate()
   }
 
@@ -66,8 +62,6 @@ export const useFloorManagement = () => {
     setBuildingId(f.building_id)
     setName(f.name)
     setFloorNumber(f.floor_number)
-    setMapWidth(f.map_width)
-    setMapHeight(f.map_height)
     modal.openEdit(f)
   }
 
@@ -92,8 +86,8 @@ export const useFloorManagement = () => {
           building_id: buildingId,
           name: name.trim(),
           floor_number: Number(floorNumber),
-          map_width: Number(mapWidth),
-          map_height: Number(mapHeight),
+          map_width: modal.editingItem.map_width || 1000,
+          map_height: modal.editingItem.map_height || 800,
         }).unwrap()
         feedback.notifySuccess(`Floor '${name.trim()}' updated successfully`)
       } else {
@@ -101,8 +95,8 @@ export const useFloorManagement = () => {
           building_id: buildingId,
           name: name.trim(),
           floor_number: Number(floorNumber),
-          map_width: Number(mapWidth),
-          map_height: Number(mapHeight),
+          map_width: 1000,
+          map_height: 800,
         }).unwrap()
         feedback.notifySuccess(`Floor '${name.trim()}' created successfully`)
       }
@@ -145,10 +139,6 @@ export const useFloorManagement = () => {
     setName,
     floorNumber,
     setFloorNumber,
-    mapWidth,
-    setMapWidth,
-    mapHeight,
-    setMapHeight,
     formError: modal.formError,
     actionError: feedback.actionError,
     actionSuccess: feedback.actionSuccess,

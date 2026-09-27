@@ -14,6 +14,8 @@ export interface Employee {
   manager_name?: string | null
   team_name?: string | null
   is_user_linked: boolean
+  role_name?: string | null
+  user_id?: number | null
   created_at: string
   updated_at: string
 }
@@ -30,6 +32,8 @@ export interface EmployeeCreatePayload {
   employee_status?: string
   manager_id?: number | null
   team_id?: number | null
+  role_name?: string
+  sso_user_id?: string | null
 }
 
 export interface EmployeeUpdatePayload {
@@ -45,6 +49,7 @@ export interface EmployeeUpdatePayload {
   employee_status?: string
   manager_id?: number | null
   team_id?: number | null
+  role_name?: string
 }
 
 export interface EmployeeFilterParams {

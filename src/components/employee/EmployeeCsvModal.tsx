@@ -49,9 +49,9 @@ export const EmployeeCsvModal: React.FC<EmployeeCsvModalProps> = ({
 
   const downloadSampleCsv = () => {
     const csvContent =
-      'employee_code,first_name,last_name,email,phone,designation,department,employment_type,employee_status,manager_employee_code,team_name\n' +
-      'EMP-101,John,Doe,john.doe@company.com,+123456789,Software Engineer,Engineering,Full-Time,ACTIVE,,\n' +
-      'EMP-102,Jane,Smith,jane.smith@company.com,+198765432,Product Manager,Product,Full-Time,ACTIVE,EMP-101,\n'
+      'employee_code,first_name,last_name,email,phone,designation,department,employment_type,employee_status,role,manager_employee_code,team_name\n' +
+      'EMP-101,John,Doe,john.doe@company.com,+123456789,Software Engineer,Engineering,Full-Time,ACTIVE,Manager,,\n' +
+      'EMP-102,Jane,Smith,jane.smith@company.com,+198765432,Product Manager,Product,Full-Time,ACTIVE,Employee,EMP-101,\n'
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
@@ -95,7 +95,7 @@ export const EmployeeCsvModal: React.FC<EmployeeCsvModalProps> = ({
             Required columns: <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">employee_code</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">first_name</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">last_name</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">email</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">designation</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">department</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">employment_type</code>.
           </p>
           <p>
-            Optional columns: <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">phone</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">employee_status</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">manager_employee_code</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">team_name</code>.
+            Optional columns: <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">role</code> (defaults to Employee; options: Employee, Manager, Admin), <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">phone</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">employee_status</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">manager_employee_code</code>, <code className="bg-slate-200 px-1 py-0.5 rounded text-[11px]">team_name</code>.
           </p>
         </div>
 

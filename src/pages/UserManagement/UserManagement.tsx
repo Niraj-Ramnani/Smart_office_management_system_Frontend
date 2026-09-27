@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useUserManagement } from './useUserManagement'
 import {
-  UserAssignModal,
-  UserCsvModal,
-  UserProvisionModal,
   UserTable,
 } from '../../components/user'
+import {
+  EmployeeCsvModal,
+  EmployeeFormModal,
+} from '../../components/employee'
 import {
   NotificationBanner,
   PageHeader,
@@ -16,7 +17,6 @@ import {
 
 export const UserManagement: React.FC = () => {
   const navigate = useNavigate()
-  const [copiedId, setCopiedId] = useState<number | null>(null)
 
   const {
     isAdmin,
@@ -34,35 +34,47 @@ export const UserManagement: React.FC = () => {
     setActionSuccess,
     handleRoleChange,
     handleToggleActive,
-    assignModalUser,
-    openAssignModal,
-    closeAssignModal,
-    selectedEmployeeId,
-    setSelectedEmployeeId,
-    handleSaveEmployeeLink,
-    modalError,
-    isSubmitting,
-    provisionModalOpen,
-    openProvisionModal,
-    closeProvisionModal,
-    handleProvisionUser,
-    provisionError,
-    isProvisioning,
+    teams,
+    onboardModalOpen,
+    openOnboardModal,
+    closeOnboardModal,
+    handleOnboardSubmit,
+    isOnboarding,
+    onboardError,
     csvModalOpen,
     setCsvModalOpen,
+    handleCsvSuccess,
+    employeeCode,
+    setEmployeeCode,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+    email,
+    setEmail,
+    phone,
+    setPhone,
+    designation,
+    setDesignation,
+    department,
+    setDepartment,
+    employmentType,
+    setEmploymentType,
+    employeeStatus,
+    setEmployeeStatus,
+    managerId,
+    setManagerId,
+    teamId,
+    setTeamId,
+    roleName,
+    setRoleName,
   } = useUserManagement()
-
-  const handleCopyOid = (userId: number, oid: string) => {
-    navigator.clipboard.writeText(oid)
-    setCopiedId(userId)
-    setTimeout(() => setCopiedId(null), 2000)
-  }
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="User Access & Role Management"
-        subtitle="Control application permissions, local roles, and link SSO users with employee profiles."
+        subtitle="Manage application roles, account activation, and audit SSO identity mapping. Onboard new employees and users directly here."
         action={
           isAdmin && (
             <div className="flex items-center gap-2">
@@ -71,14 +83,14 @@ export const UserManagement: React.FC = () => {
                 onClick={() => setCsvModalOpen(true)}
                 className="inline-flex items-center justify-center px-3.5 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 shadow-xs transition-colors cursor-pointer"
               >
-                Bulk CSV Provision
+                Bulk CSV Import
               </button>
               <button
                 type="button"
-                onClick={openProvisionModal}
+                onClick={openOnboardModal}
                 className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-colors cursor-pointer"
               >
-                + Provision User
+                + Onboard / Add User
               </button>
             </div>
           )
@@ -95,7 +107,7 @@ export const UserManagement: React.FC = () => {
       <SearchBar
         value={searchTerm}
         onChange={setSearchTerm}
-        placeholder="Search email, role, employee name, SSO OID..."
+        placeholder="Search email, role, employee name, OID..."
         totalCount={rawCount}
         filteredCount={users.length}
         itemLabel="users"
@@ -110,16 +122,16 @@ export const UserManagement: React.FC = () => {
         emptyDescription={
           searchTerm
             ? 'Try adjusting your search criteria.'
-            : 'Users will appear here once provisioned in the database.'
+            : 'Users will appear here once onboarded or authenticated via Microsoft Entra SSO.'
         }
         emptyAction={
           isAdmin && !searchTerm && (
             <button
               type="button"
-              onClick={openProvisionModal}
+              onClick={openOnboardModal}
               className="mt-2 inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer"
             >
-              + Provision First User
+              + Onboard First User
             </button>
           )
         }
@@ -127,45 +139,53 @@ export const UserManagement: React.FC = () => {
         <UserTable
           users={users}
           roles={roles}
-          copiedId={copiedId}
-          onCopyOid={handleCopyOid}
           onRoleChange={handleRoleChange}
           onViewEmployee={(term) =>
             navigate(`/employees?search=${encodeURIComponent(term)}`)
           }
-          onOpenAssignModal={openAssignModal}
           onToggleActive={handleToggleActive}
         />
       </TableCard>
 
-      <UserProvisionModal
-        isOpen={provisionModalOpen}
-        onClose={closeProvisionModal}
+      <EmployeeFormModal
+        isOpen={onboardModalOpen}
+        onClose={closeOnboardModal}
+        editingEmployee={null}
+        formError={onboardError}
+        isSubmitting={isOnboarding}
+        onSubmit={handleOnboardSubmit}
+        employeeCode={employeeCode}
+        setEmployeeCode={setEmployeeCode}
+        employmentType={employmentType}
+        setEmploymentType={setEmploymentType}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        email={email}
+        setEmail={setEmail}
+        phone={phone}
+        setPhone={setPhone}
+        designation={designation}
+        setDesignation={setDesignation}
+        department={department}
+        setDepartment={setDepartment}
+        teamId={teamId}
+        setTeamId={setTeamId}
+        teams={teams}
+        managerId={managerId}
+        setManagerId={setManagerId}
         employees={employees}
-        roles={roles}
-        onSubmit={handleProvisionUser}
-        isSubmitting={isProvisioning}
-        error={provisionError}
+        employeeStatus={employeeStatus}
+        setEmployeeStatus={setEmployeeStatus}
+        roleName={roleName}
+        setRoleName={setRoleName}
       />
 
-      <UserCsvModal
+      <EmployeeCsvModal
         isOpen={csvModalOpen}
         onClose={() => setCsvModalOpen(false)}
-        onSuccess={(count) => {
-          setActionSuccess(`Successfully provisioned ${count} users from CSV.`)
-        }}
-      />
-
-      <UserAssignModal
-        isOpen={Boolean(assignModalUser)}
-        onClose={closeAssignModal}
-        user={assignModalUser}
-        employees={employees}
-        selectedEmployeeId={selectedEmployeeId}
-        onEmployeeSelect={setSelectedEmployeeId}
-        onSave={handleSaveEmployeeLink}
-        modalError={modalError}
-        isSubmitting={isSubmitting}
+        onSuccess={handleCsvSuccess}
       />
     </div>
   )

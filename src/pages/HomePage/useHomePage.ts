@@ -15,7 +15,7 @@ export const useHomePage = () => {
   const totalFloors = floors.length
   const totalEmployees = employees.length
   const activeEmployees = employees.filter((e) => e.employee_status === 'ACTIVE').length
-  const unlinkedUsers = users.filter((u) => !u.employee_id).length
+  const activeUsers = users.filter((u) => u.is_active).length
   const totalUsers = users.length
 
   const isLoading =
@@ -32,7 +32,7 @@ export const useHomePage = () => {
     totalFloors,
     totalEmployees,
     activeEmployees,
-    unlinkedUsers,
+    activeUsers,
     totalUsers,
     isLoading,
   }
