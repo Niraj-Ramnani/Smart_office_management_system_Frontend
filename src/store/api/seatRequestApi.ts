@@ -4,6 +4,7 @@ import type {
   SeatRequestCreatePayload,
   SeatRequestExecutePayload,
   SeatRequestReviewPayload,
+  SwapConsentPayload,
 } from '../../types'
 
 export const seatRequestApi = baseApi.injectEndpoints({
@@ -57,7 +58,19 @@ export const seatRequestApi = baseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
-      invalidatesTags: ['SeatRequest'],
+      invalidatesTags: ['SeatRequest', 'Notification'],
+    }),
+
+    respondSwapConsent: builder.mutation<
+      SeatRequest,
+      { requestId: number; payload: SwapConsentPayload }
+    >({
+      query: ({ requestId, payload }) => ({
+        url: `/seat-requests/${requestId}/consent`,
+        method: 'POST',
+        body: payload,
+      }),
+      invalidatesTags: ['SeatRequest', 'Notification'],
     }),
 
     executeSeatRequest: builder.mutation<
@@ -69,7 +82,7 @@ export const seatRequestApi = baseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
-      invalidatesTags: ['SeatRequest', 'Seat', 'Employee'],
+      invalidatesTags: ['SeatRequest', 'Seat', 'Employee', 'Asset', 'Notification'],
     }),
   }),
 })
@@ -81,5 +94,6 @@ export const {
   useGetAllSeatRequestsQuery,
   useGetApprovedSeatRequestsQuery,
   useReviewSeatRequestMutation,
+  useRespondSwapConsentMutation,
   useExecuteSeatRequestMutation,
 } = seatRequestApi

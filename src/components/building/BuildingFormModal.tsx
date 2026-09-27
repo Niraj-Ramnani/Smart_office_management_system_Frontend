@@ -54,7 +54,7 @@ export const BuildingFormModal: React.FC<BuildingFormModalProps> = ({
             placeholder="e.g. BLD-01"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 font-mono"
           />
         </div>
 
@@ -68,7 +68,7 @@ export const BuildingFormModal: React.FC<BuildingFormModalProps> = ({
             placeholder="e.g. Headquarters Tower"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
 
@@ -81,7 +81,7 @@ export const BuildingFormModal: React.FC<BuildingFormModalProps> = ({
             placeholder="Street, City, State..."
             value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
           />
         </div>
 
@@ -96,7 +96,7 @@ export const BuildingFormModal: React.FC<BuildingFormModalProps> = ({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? 'Saving...' : editingBuilding ? 'Update' : 'Create'}
           </button>

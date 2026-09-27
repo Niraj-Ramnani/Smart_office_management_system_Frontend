@@ -424,7 +424,7 @@ export const SeatActionModal: React.FC<SeatActionModalProps> = ({
                     <button
                       type="button"
                       onClick={() => setEmpSearch('')}
-                      className="mt-2 text-blue-600 font-medium hover:underline text-xs cursor-pointer"
+                      className="mt-2 text-orange-600 font-medium hover:underline text-xs cursor-pointer"
                     >
                       Clear search filter
                     </button>
@@ -472,7 +472,7 @@ export const SeatActionModal: React.FC<SeatActionModalProps> = ({
                         <div className="shrink-0 ml-2">
                           {isSelected ? (
                             <span className="inline-flex items-center text-xs font-bold text-orange-600">
-                              ✓ Selected
+                              Selected
                             </span>
                           ) : (
                             <span className="text-[11px] text-slate-400">
@@ -569,8 +569,8 @@ export const SeatActionModal: React.FC<SeatActionModalProps> = ({
                         onClick={() => setTargetSeatId(vSeat.id)}
                         className={`p-2.5 rounded-lg border text-left transition cursor-pointer ${
                           isSelected
-                            ? 'bg-blue-600 text-white border-blue-600 font-bold shadow-xs'
-                            : 'bg-white text-slate-700 border-slate-200 hover:border-blue-400'
+                            ? 'bg-zinc-900 text-white border-zinc-900 font-bold shadow-xs'
+                            : 'bg-white text-slate-700 border-slate-200 hover:border-orange-400'
                         }`}
                       >
                         <div className="text-xs font-mono font-bold truncate">
@@ -578,7 +578,7 @@ export const SeatActionModal: React.FC<SeatActionModalProps> = ({
                         </div>
                         <div
                           className={`text-[10px] ${
-                            isSelected ? 'text-blue-100' : 'text-slate-400'
+                            isSelected ? 'text-zinc-300' : 'text-slate-400'
                           }`}
                         >
                           Vacant
@@ -703,7 +703,7 @@ export const SeatActionModal: React.FC<SeatActionModalProps> = ({
                         <div className="shrink-0 ml-2">
                           {isSelected ? (
                             <span className="inline-flex items-center text-xs font-bold text-orange-600">
-                              ✓ Selected
+                              Selected
                             </span>
                           ) : (
                             <span className="text-[11px] text-slate-400">

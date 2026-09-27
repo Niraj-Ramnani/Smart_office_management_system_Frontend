@@ -27,6 +27,10 @@ export const employeeApi = baseApi.injectEndpoints({
             ]
           : [{ type: 'Employee', id: 'LIST' }],
     }),
+    getEmployeeById: builder.query<Employee, number>({
+      query: (id) => `/employees/${id}`,
+      providesTags: (_, __, id) => [{ type: 'Employee', id }],
+    }),
     createEmployee: builder.mutation<Employee, EmployeeCreatePayload>({
       query: (body) => ({
         url: '/employees',
@@ -90,6 +94,7 @@ export const employeeApi = baseApi.injectEndpoints({
 
 export const {
   useGetEmployeesQuery,
+  useGetEmployeeByIdQuery,
   useCreateEmployeeMutation,
   useUpdateEmployeeMutation,
   useUpdateEmployeeStatusMutation,

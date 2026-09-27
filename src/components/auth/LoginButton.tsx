@@ -17,7 +17,7 @@ export const LoginButton: React.FC<LoginButtonProps> = ({
       id="btn-ms-login"
       onClick={onLogin}
       disabled={disabled || isLoading}
-      className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-sm transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      className="w-full flex items-center justify-center gap-3 px-5 py-3 rounded-lg border border-slate-300 bg-white text-slate-800 font-semibold hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 shadow-xs transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
     >
       {isLoading ? (
         <svg

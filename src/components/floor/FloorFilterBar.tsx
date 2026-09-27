@@ -25,7 +25,7 @@ export const FloorFilterBar: React.FC<FloorFilterBarProps> = ({
           onChange={(e) =>
             onBuildingChange(e.target.value ? Number(e.target.value) : undefined)
           }
-          className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64"
+          className="px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 w-full sm:w-64"
         >
           <option value="">All Buildings</option>
           {buildings.map((b) => (

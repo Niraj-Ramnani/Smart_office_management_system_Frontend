@@ -36,7 +36,7 @@ export const TableCard: React.FC<TableCardProps> = ({
           {emptyAction}
         </div>
       ) : (
-        <div className="overflow-x-auto">{children}</div>
+        <div className="table-scroll">{children}</div>
       )}
     </div>
   )

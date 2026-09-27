@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import type { Employee, SeatRequestType } from '../../types'
+import React, { useState, useEffect } from 'react'
+import type { Employee, SeatRequestType, AssetType, Seat } from '../../types'
 import { useCreateSeatRequestMutation } from '../../store/api/seatRequestApi'
 import { useGetEmployeesQuery } from '../../store/api/employeeApi'
+import { useListSeatsQuery } from '../../store/api/seatApi'
+import { useGetMeQuery } from '../../store/api/baseApi'
 
 interface SeatRequestModalProps {
   isOpen: boolean
@@ -11,33 +13,45 @@ interface SeatRequestModalProps {
   initialTargetEmployeeId?: number | null
 }
 
-interface SeatRequestFormContentProps {
-  onClose: () => void
-  initialType: SeatRequestType
-  initialSeat: { id: number; seat_number: string } | null
-  initialTargetEmployeeId: number | null
-}
-
-const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
+export const SeatRequestModal: React.FC<SeatRequestModalProps> = ({
+  isOpen,
   onClose,
-  initialType,
-  initialSeat,
-  initialTargetEmployeeId,
+  initialType = 'RELOCATION',
+  initialSeat = null,
+  initialTargetEmployeeId = null,
 }) => {
+  const { data: currentUser } = useGetMeQuery()
+  const isManagerOrAdmin = currentUser?.role === 'Manager' || currentUser?.role === 'Admin'
+
   const [requestType, setRequestType] = useState<SeatRequestType>(initialType)
   const [targetEmployeeId, setTargetEmployeeId] = useState<number | ''>(
     initialTargetEmployeeId || ''
   )
+  const [managedEmployeeId, setManagedEmployeeId] = useState<number | ''>('')
   const [preferredSeatId, setPreferredSeatId] = useState<number | ''>(
     initialSeat ? initialSeat.id : ''
   )
+  const [assetType, setAssetType] = useState<AssetType>('Monitor')
   const [reason, setReason] = useState('')
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const [createRequest, { isLoading }] = useCreateSeatRequestMutation()
-  const { data: employeesData } = useGetEmployeesQuery({ employee_status: 'ACTIVE' })
+  const { data: employeesData = [] } = useGetEmployeesQuery({ employee_status: 'ACTIVE' })
+  const { data: seats = [] } = useListSeatsQuery()
 
-  const activeEmployees = employeesData || []
+  // Sync props into state whenever the modal is opened with new values
+  useEffect(() => {
+    if (isOpen) {
+      setRequestType(initialType)
+      setPreferredSeatId(initialSeat ? initialSeat.id : '')
+      setTargetEmployeeId(initialTargetEmployeeId || '')
+      setManagedEmployeeId('')
+      setReason('')
+      setErrorMessage(null)
+    }
+  }, [isOpen, initialType, initialSeat, initialTargetEmployeeId])
+
+  if (!isOpen) return null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,15 +60,27 @@ const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
     try {
       await createRequest({
         request_type: requestType,
-        target_employee_id: targetEmployeeId ? Number(targetEmployeeId) : undefined,
+        target_seat_id: preferredSeatId ? Number(preferredSeatId) : undefined,
         preferred_seat_id: preferredSeatId ? Number(preferredSeatId) : undefined,
-        reason: reason || undefined,
+        target_employee_id: targetEmployeeId ? Number(targetEmployeeId) : undefined,
+        employee_id: isManagerOrAdmin && managedEmployeeId ? Number(managedEmployeeId) : undefined,
+        asset_type: requestType === 'ASSET_NEW' ? assetType : undefined,
+        reason: reason.trim() || undefined,
       }).unwrap()
 
-      onClose()
+      handleClose()
     } catch (err: any) {
       setErrorMessage(err?.data?.detail || 'Failed to submit seat request')
     }
+  }
+
+  const handleClose = () => {
+    setReason('')
+    setPreferredSeatId('')
+    setTargetEmployeeId('')
+    setManagedEmployeeId('')
+    setErrorMessage(null)
+    onClose()
   }
 
   return (
@@ -63,10 +89,12 @@ const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
         <div className="p-6 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
-            <h3 className="text-base font-bold text-slate-800">Submit Seat Request</h3>
+            <h3 className="text-base font-bold text-slate-800">
+              {isManagerOrAdmin ? 'Initiate Seat / Asset Request' : 'Submit Workspace Request'}
+            </h3>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition"
           >
             &times;
@@ -85,65 +113,54 @@ const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
               Request Type
             </label>
             <div className="grid grid-cols-3 gap-2">
-              {(['NEW_SEAT', 'RELOCATION', 'SWAP'] as SeatRequestType[]).map((type) => (
-                <button
-                  type="button"
-                  key={type}
-                  onClick={() => setRequestType(type)}
-                  className={`py-2 px-3 rounded-xl text-xs font-semibold border transition ${
-                    requestType === type
-                      ? 'bg-orange-50 border-orange-500 text-orange-600 shadow-xs'
-                      : 'border-slate-200 text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {type === 'NEW_SEAT' ? 'New Seat' : type === 'RELOCATION' ? 'Relocation' : 'Seat Swap'}
-                </button>
-              ))}
+              <button
+                type="button"
+                onClick={() => setRequestType('RELOCATION')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold border transition ${
+                  requestType === 'RELOCATION' || requestType === 'NEW_SEAT'
+                    ? 'bg-orange-50 border-orange-500 text-orange-600'
+                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                Seat Relocation
+              </button>
+              <button
+                type="button"
+                onClick={() => setRequestType('SWAP')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold border transition ${
+                  requestType === 'SWAP'
+                    ? 'bg-orange-50 border-orange-500 text-orange-600'
+                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                Seat Swap
+              </button>
+              <button
+                type="button"
+                onClick={() => setRequestType('ASSET_NEW')}
+                className={`py-2 px-3 rounded-xl text-xs font-semibold border transition ${
+                  requestType === 'ASSET_NEW'
+                    ? 'bg-orange-50 border-orange-500 text-orange-600'
+                    : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                New Asset
+              </button>
             </div>
           </div>
 
-          {(requestType === 'NEW_SEAT' || requestType === 'RELOCATION') && (
+          {isManagerOrAdmin && (
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {requestType === 'RELOCATION' ? 'Target Desk for Relocation' : 'Preferred Desk'}
-              </label>
-              {initialSeat ? (
-                <div className="flex items-center justify-between p-3 rounded-xl bg-orange-50/60 border border-orange-200">
-                  <div className="flex items-center space-x-2">
-                    <span className="w-2 h-2 rounded-full bg-orange-500" />
-                    <span className="text-xs font-bold text-slate-800">
-                      Desk {initialSeat.seat_number}
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-semibold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md">
-                    Selected
-                  </span>
-                </div>
-              ) : (
-                <input
-                  type="number"
-                  value={preferredSeatId}
-                  onChange={(e) => setPreferredSeatId(Number(e.target.value) || '')}
-                  placeholder="Enter seat ID (optional)"
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-              )}
-            </div>
-          )}
-
-          {requestType === 'SWAP' && (
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                Target Employee to Swap With
+                Target Team Member (Optional: Leave blank for yourself)
               </label>
               <select
-                value={targetEmployeeId}
-                onChange={(e) => setTargetEmployeeId(Number(e.target.value) || '')}
-                required
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                value={managedEmployeeId}
+                onChange={(e) => setManagedEmployeeId(Number(e.target.value) || '')}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
               >
-                <option value="">-- Choose employee to swap --</option>
-                {activeEmployees.map((emp: Employee) => (
+                <option value="">-- Apply for myself / Default --</option>
+                {employeesData.map((emp: Employee) => (
                   <option key={emp.id} value={emp.id}>
                     {emp.first_name} {emp.last_name} ({emp.employee_code} - {emp.department})
                   </option>
@@ -152,15 +169,94 @@ const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
             </div>
           )}
 
+          {(requestType === 'RELOCATION' || requestType === 'NEW_SEAT') && (
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                Target Desk
+              </label>
+
+              {/* Show pre-selected seat badge when coming from floor map click */}
+              {initialSeat && preferredSeatId === initialSeat.id ? (
+                <div className="flex items-center gap-2 px-3 py-2.5 bg-emerald-50 border border-emerald-200 rounded-xl">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                  <span className="text-xs font-semibold text-emerald-800">
+                    Pre-selected: Desk {initialSeat.seat_number}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPreferredSeatId('')}
+                    className="ml-auto text-[10px] text-emerald-600 hover:text-emerald-800 font-medium cursor-pointer underline"
+                  >
+                    Change
+                  </button>
+                </div>
+              ) : (
+                <select
+                  value={preferredSeatId}
+                  onChange={(e) => setPreferredSeatId(Number(e.target.value) || '')}
+                  required
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                >
+                  <option value="">-- Select destination desk --</option>
+                  {seats.map((seat: Seat) => (
+                    <option key={seat.id} value={seat.id}>
+                      {seat.seat_number} · Floor {seat.floor_id} ({seat.status}
+                      {seat.employee_name ? ` - Occupied by ${seat.employee_name}` : ''})
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          )}
+
+          {requestType === 'SWAP' && (
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                Employee to Swap Desks With
+              </label>
+              <select
+                value={targetEmployeeId}
+                onChange={(e) => setTargetEmployeeId(Number(e.target.value) || '')}
+                required
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+              >
+                <option value="">-- Choose employee to swap --</option>
+                {employeesData.map((emp: Employee) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.first_name} {emp.last_name} ({emp.employee_code} - {emp.department})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {requestType === 'ASSET_NEW' && (
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                Asset Category
+              </label>
+              <select
+                value={assetType}
+                onChange={(e) => setAssetType(e.target.value as AssetType)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+              >
+                <option value="Monitor">Monitor</option>
+                <option value="Mouse">Mouse</option>
+                <option value="Earphone">Earphone</option>
+                <option value="Desktop">Desktop</option>
+              </select>
+            </div>
+          )}
+
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1.5">
-              Reason / Business Need
+              Reason / Business Justification
             </label>
             <textarea
               rows={3}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="Explain the reason for this seat request..."
+              placeholder="Explain the justification for this request..."
               className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
@@ -168,7 +264,7 @@ const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
           <div className="flex items-center space-x-3 pt-3">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50"
             >
               Cancel
@@ -187,21 +283,4 @@ const SeatRequestFormContent: React.FC<SeatRequestFormContentProps> = ({
   )
 }
 
-export const SeatRequestModal: React.FC<SeatRequestModalProps> = ({
-  isOpen,
-  onClose,
-  initialType = 'NEW_SEAT',
-  initialSeat = null,
-  initialTargetEmployeeId = null,
-}) => {
-  if (!isOpen) return null
-
-  return (
-    <SeatRequestFormContent
-      onClose={onClose}
-      initialType={initialType}
-      initialSeat={initialSeat}
-      initialTargetEmployeeId={initialTargetEmployeeId}
-    />
-  )
-}
+export default SeatRequestModal

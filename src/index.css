@@ -3,13 +3,154 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  color: #111827;
-  background-color: #f9fafb;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+  background-color: #f8fafc;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
 #root {
   min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Custom Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* ─── Smooth scroll for main content ─── */
+.main-scroll-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.main-scroll-area::-webkit-scrollbar {
+  width: 5px;
+}
+
+.main-scroll-area::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.main-scroll-area::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.main-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ─── Sidebar scroll ─── */
+.sidebar-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+/* ─── Table scroll containers ─── */
+.table-scroll {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+.table-scroll::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.table-scroll::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.table-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+/* ─── Card / panel inner scroll ─── */
+.card-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.card-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.card-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-scroll::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 999px;
+}
+
+/* ─── Fade in animation ─── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease-out both;
+}
+
+/* ─── Subtle pulse for loading states ─── */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.animate-subtle-pulse {
+  animation: subtlePulse 1.8s ease-in-out infinite;
 }

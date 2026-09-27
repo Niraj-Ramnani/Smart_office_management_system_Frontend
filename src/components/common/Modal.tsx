@@ -37,23 +37,23 @@ export const Modal: React.FC<ModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 animate-in fade-in duration-150"
     >
       <div
-        className={`bg-white rounded-2xl shadow-2xl border border-slate-100 ${maxWidthClass} w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-150`}
+        className={`bg-white rounded-xl shadow-xl border border-slate-200 ${maxWidthClass} w-full p-5 space-y-4 max-h-[90vh] card-scroll animate-in zoom-in-95 duration-150`}
       >
-        <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div className="flex justify-between items-start border-b border-slate-100 pb-3">
           <div>
-            <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+            <h3 className="text-sm font-bold text-slate-900 tracking-tight">{title}</h3>
             {subtitle && (
-              <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>
+              <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{subtitle}</p>
             )}
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+            className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

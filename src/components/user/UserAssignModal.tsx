@@ -56,7 +56,7 @@ export const UserAssignModal: React.FC<UserAssignModalProps> = ({
             onChange={(e) =>
               onEmployeeSelect(e.target.value ? Number(e.target.value) : null)
             }
-            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="">— Unlink / No Employee —</option>
             {employees.map((e) => (
@@ -79,7 +79,7 @@ export const UserAssignModal: React.FC<UserAssignModalProps> = ({
             type="button"
             disabled={isSubmitting}
             onClick={onSave}
-            className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
           >
             {isSubmitting ? 'Saving...' : 'Save Link'}
           </button>

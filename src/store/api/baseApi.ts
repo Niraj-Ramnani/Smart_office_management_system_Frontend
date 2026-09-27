@@ -23,7 +23,18 @@ export const baseApi = createApi({
       return headers
     },
   }),
-  tagTypes: ['User', 'Building', 'Floor', 'Team', 'Employee', 'Role', 'Seat', 'SeatRequest'],
+  tagTypes: [
+    'User',
+    'Building',
+    'Floor',
+    'Team',
+    'Employee',
+    'Role',
+    'Seat',
+    'SeatRequest',
+    'Asset',
+    'Notification',
+  ],
   endpoints: (builder) => ({
     getHealth: builder.query<HealthResponse, void>({
       query: () => '/health',

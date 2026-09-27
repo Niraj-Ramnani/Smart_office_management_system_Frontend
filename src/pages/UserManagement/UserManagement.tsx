@@ -74,7 +74,7 @@ export const UserManagement: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title="User Access & Role Management"
-        subtitle="Manage application roles, account activation, and audit SSO identity mapping. Onboard new employees and users directly here."
+        subtitle="Manage application roles, account activation, and user permissions. Onboard new employees and users directly here."
         action={
           isAdmin && (
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export const UserManagement: React.FC = () => {
               <button
                 type="button"
                 onClick={openOnboardModal}
-                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 shadow-sm transition-colors cursor-pointer"
               >
                 + Onboard / Add User
               </button>
@@ -107,7 +107,7 @@ export const UserManagement: React.FC = () => {
       <SearchBar
         value={searchTerm}
         onChange={setSearchTerm}
-        placeholder="Search email, role, employee name, OID..."
+        placeholder="Search email, role, employee name..."
         totalCount={rawCount}
         filteredCount={users.length}
         itemLabel="users"
@@ -129,7 +129,7 @@ export const UserManagement: React.FC = () => {
             <button
               type="button"
               onClick={openOnboardModal}
-              className="mt-2 inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer"
+              className="mt-2 inline-flex items-center px-4 py-2 text-sm font-medium text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 cursor-pointer"
             >
               + Onboard First User
             </button>

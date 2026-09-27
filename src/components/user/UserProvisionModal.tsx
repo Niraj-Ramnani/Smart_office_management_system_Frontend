@@ -78,7 +78,7 @@ export const UserProvisionModal: React.FC<UserProvisionModalProps> = ({
               required
               value={effectiveEmployeeId || ''}
               onChange={(e) => setSelectedEmployeeId(Number(e.target.value))}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="" disabled>
                 Select Employee
@@ -119,7 +119,7 @@ export const UserProvisionModal: React.FC<UserProvisionModalProps> = ({
               placeholder="e.g. 8c17f5d5-1234-4567-890a-bcdef0123456"
               value={ssoUserId}
               onChange={(e) => setSsoUserId(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-xs"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 font-mono text-xs"
             />
             <p className="text-[11px] text-slate-400 mt-1">
               The unique Object ID from your Azure / Microsoft Entra ID tenant.
@@ -134,7 +134,7 @@ export const UserProvisionModal: React.FC<UserProvisionModalProps> = ({
               required
               value={roleName}
               onChange={(e) => setRoleName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               {roles.length > 0 ? (
                 roles.map((r) => (
@@ -163,7 +163,7 @@ export const UserProvisionModal: React.FC<UserProvisionModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting || !effectiveEmployeeId || !ssoUserId.trim()}
-              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? 'Provisioning...' : 'Provision User'}
             </button>

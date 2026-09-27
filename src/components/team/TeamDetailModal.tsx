@@ -144,15 +144,15 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           </div>
         )}
 
-        <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/50 rounded-2xl p-5 border border-slate-200/90 shadow-xs">
+        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-4 min-w-0">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold flex items-center justify-center text-lg shadow-md ring-4 ring-blue-50 shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-zinc-900 text-white font-bold flex items-center justify-center text-base shrink-0">
                 {managerInitials}
               </div>
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-100/80 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-700 bg-zinc-100 px-2.5 py-0.5 rounded-md border border-zinc-200">
                     Team Manager
                   </span>
                   {team.manager_employee_code && (
@@ -161,18 +161,18 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                     </span>
                   )}
                   {team.manager_seat_number ? (
-                    <span className="inline-flex items-center space-x-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <span className="inline-flex items-center space-x-1 text-xs font-semibold px-2 py-0.5 rounded-md bg-zinc-100 text-zinc-800 border border-zinc-200">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       <span>Desk: {team.manager_seat_number}</span>
                     </span>
                   ) : (
-                    <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">
                       Desk: Unassigned
                     </span>
                   )}
                 </div>
 
-                <h4 className="text-lg font-bold text-slate-900 truncate">
+                <h4 className="text-base font-bold text-slate-900 truncate">
                   {team.manager_name || `Manager ID: ${team.manager_id}`}
                 </h4>
 
@@ -198,7 +198,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                   onClose()
                   onEditTeam(team)
                 }}
-                className="self-start sm:self-center shrink-0 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 shadow-xs transition-colors cursor-pointer"
+                className="self-start sm:self-center shrink-0 px-3.5 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-xs transition-colors cursor-pointer"
               >
                 Edit Team / Manager
               </button>
@@ -210,10 +210,10 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <div className="flex items-center space-x-2">
-                <h4 className="text-base font-bold text-slate-900">
+                <h4 className="text-sm font-bold text-slate-900">
                   Team Members
                 </h4>
-                <span className="px-2 py-0.5 text-xs font-bold bg-blue-100 text-blue-700 rounded-full">
+                <span className="px-2 py-0.5 text-xs font-semibold bg-zinc-100 text-zinc-800 rounded">
                   {members.length}
                 </span>
               </div>
@@ -229,7 +229,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                   placeholder="Search members..."
                   value={memberSearch}
                   onChange={(e) => setMemberSearch(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 bg-slate-50/50"
+                  className="pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 w-48 bg-white"
                 />
                 <svg
                   className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5 pointer-events-none"
@@ -250,7 +250,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddMode((v) => !v)}
-                  className="px-3 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition-colors cursor-pointer shrink-0"
+                  className="px-3 py-1.5 text-xs font-bold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-xs transition-colors cursor-pointer shrink-0"
                 >
                   {isAddMode ? 'Close Picker' : '+ Add Members'}
                 </button>
@@ -259,7 +259,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           </div>
 
           {isAddMode && (
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 animate-in fade-in duration-150">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 animate-in fade-in duration-150">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span className="text-xs font-bold text-slate-800">
                   Select available employees to assign to {team.name}:
@@ -269,7 +269,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                   placeholder="Filter candidate employees..."
                   value={candidateSearch}
                   onChange={(e) => setCandidateSearch(e.target.value)}
-                  className="px-3 py-1 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-60 bg-white"
+                  className="px-3 py-1 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 w-60 bg-white"
                 />
               </div>
 
@@ -284,8 +284,8 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                     return (
                       <label
                         key={cand.id}
-                        className={`flex items-center justify-between px-3.5 py-2.5 text-xs cursor-pointer hover:bg-blue-50/50 transition-colors ${
-                          isSelected ? 'bg-blue-50/70 font-medium' : ''
+                        className={`flex items-center justify-between px-3.5 py-2.5 text-xs cursor-pointer hover:bg-slate-50 transition-colors ${
+                          isSelected ? 'bg-orange-50 font-medium' : ''
                         }`}
                       >
                         <div className="flex items-center space-x-3 min-w-0">
@@ -293,7 +293,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                             type="checkbox"
                             checked={isSelected}
                             onChange={() => handleToggleCandidate(cand.id)}
-                            className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+                            className="rounded text-orange-600 focus:ring-orange-500 h-4 w-4"
                           />
                           <div className="min-w-0">
                             <div className="flex items-center space-x-2">
@@ -310,7 +310,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                           </div>
                         </div>
                         {cand.team_name && (
-                          <span className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full shrink-0 ml-2">
+                          <span className="text-[10px] text-zinc-600 bg-zinc-100 border border-zinc-200 px-2 py-0.5 rounded-full shrink-0 ml-2">
                             current: {cand.team_name}
                           </span>
                         )}
@@ -335,7 +335,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                   type="button"
                   disabled={selectedToAdd.length === 0 || isProcessing}
                   onClick={handleConfirmAdd}
-                  className="px-4 py-1.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-xs cursor-pointer transition"
+                  className="px-4 py-1.5 text-xs font-bold text-white bg-orange-600 hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg shadow-xs cursor-pointer transition"
                 >
                   {isProcessing
                     ? 'Adding...'
@@ -346,7 +346,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
           )}
 
           {members.length === 0 ? (
-            <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-200 rounded-2xl">
+            <div className="text-center py-12 bg-slate-50 border border-dashed border-slate-200 rounded-xl">
               <p className="text-sm font-semibold text-slate-700">No members assigned</p>
               <p className="text-xs text-slate-400 mt-1">
                 This team does not currently have any employees assigned to it.
@@ -355,7 +355,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsAddMode(true)}
-                  className="mt-3.5 px-4 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-xl cursor-pointer transition-colors"
+                  className="mt-3.5 px-4 py-2 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg cursor-pointer transition-colors"
                 >
                   + Add Members to Team
                 </button>
@@ -367,7 +367,7 @@ export const TeamDetailModal: React.FC<TeamDetailModalProps> = ({
             </div>
           ) : (
             <div className="border border-slate-200/90 rounded-2xl overflow-hidden shadow-xs">
-              <div className="overflow-x-auto">
+              <div className="table-scroll">
                 <table className="w-full text-left text-xs text-slate-600">
                   <thead className="bg-slate-50/80 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200">
                     <tr>

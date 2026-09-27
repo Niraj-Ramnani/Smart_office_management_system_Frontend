@@ -1,5 +1,7 @@
 import React from 'react'
 import type { Team } from '../../types'
+import { Badge } from '../common/Badge'
+import { ActionMenu } from '../common/ActionMenu'
 
 export interface TeamTableProps {
   teams: Team[]
@@ -17,14 +19,14 @@ export const TeamTable: React.FC<TeamTableProps> = ({
   onDelete,
 }) => {
   return (
-    <table className="w-full text-left text-sm text-slate-600">
-      <thead className="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b border-slate-200">
+    <table className="w-full text-left text-xs text-slate-600">
+      <thead className="bg-slate-50/80 text-[11px] uppercase font-semibold text-slate-500 border-b border-slate-200 tracking-wider">
         <tr>
-          <th className="px-6 py-3.5">Team Name</th>
-          <th className="px-6 py-3.5">Department</th>
-          <th className="px-6 py-3.5">Manager</th>
-          <th className="px-6 py-3.5 text-center">Members</th>
-          <th className="px-6 py-3.5 text-right">Actions</th>
+          <th className="px-5 py-3">Team Name</th>
+          <th className="px-5 py-3">Department</th>
+          <th className="px-5 py-3">Team Lead / Manager</th>
+          <th className="px-5 py-3 text-center">Roster Size</th>
+          <th className="px-5 py-3 text-right">Actions</th>
         </tr>
       </thead>
       <tbody className="divide-y divide-slate-100">
@@ -32,70 +34,58 @@ export const TeamTable: React.FC<TeamTableProps> = ({
           <tr
             key={t.id}
             onClick={() => onOpenTeam(t)}
-            className="hover:bg-blue-50/40 cursor-pointer transition-colors group"
+            className="hover:bg-slate-50/70 cursor-pointer transition-colors"
           >
-            <td className="px-6 py-4">
-              <div className="font-semibold text-slate-900 group-hover:text-blue-600 flex items-center space-x-1.5 transition-colors">
-                <span>{t.name}</span>
-                <span className="text-[11px] text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                  ↗
-                </span>
+            <td className="px-5 py-3.5">
+              <div className="font-semibold text-slate-900 hover:text-orange-600 transition-colors">
+                {t.name}
               </div>
-              <span className="text-xs text-slate-400">Click to view roster & manager</span>
+              <div className="text-[11px] text-slate-400">Click to view roster & seating</div>
             </td>
-            <td className="px-6 py-4 text-slate-600 font-medium">{t.department}</td>
-            <td className="px-6 py-4">
+            <td className="px-5 py-3.5 font-medium text-slate-800">{t.department}</td>
+            <td className="px-5 py-3.5">
               <div className="text-slate-900 font-medium">
                 {t.manager_name || `Manager ID: ${t.manager_id}`}
               </div>
-              <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-400 mt-0.5">
-                {t.manager_email && (
-                  <span className="font-mono">{t.manager_email}</span>
-                )}
-                {t.manager_designation && (
-                  <span>• {t.manager_designation}</span>
-                )}
+              <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-400 mt-0.5">
+                {t.manager_email && <span>{t.manager_email}</span>}
                 {t.manager_seat_number && (
-                  <span className="text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-semibold text-[11px]">
+                  <span className="text-slate-700 bg-slate-100 px-1.5 py-0.2 rounded font-medium text-[10px]">
                     Desk: {t.manager_seat_number}
                   </span>
                 )}
               </div>
             </td>
-            <td className="px-6 py-4 text-center">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+            <td className="px-5 py-3.5 text-center">
+              <Badge variant="neutral">
                 {t.member_count} member{t.member_count === 1 ? '' : 's'}
-              </span>
+              </Badge>
             </td>
             <td
-              className="px-6 py-4 text-right space-x-2"
+              className="px-5 py-3.5 text-right whitespace-nowrap"
               onClick={(e) => e.stopPropagation()}
             >
-              <button
-                type="button"
-                onClick={() => onOpenTeam(t)}
-                className="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded cursor-pointer transition-colors"
-              >
-                Open Team
-              </button>
-              {isAdmin && (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => onEdit(t)}
-                    className="text-xs font-medium text-slate-600 hover:text-slate-900 px-2 py-1 rounded cursor-pointer"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onDelete(t.id)}
-                    className="text-xs font-medium text-red-600 hover:text-red-800 px-2 py-1 rounded cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                </>
-              )}
+              <ActionMenu
+                primaryAction={{
+                  label: 'View',
+                  onClick: () => onOpenTeam(t),
+                }}
+                items={
+                  isAdmin
+                    ? [
+                        {
+                          label: 'Edit Team',
+                          onClick: () => onEdit(t),
+                        },
+                        {
+                          label: 'Delete Team',
+                          onClick: () => onDelete(t.id),
+                          isDestructive: true,
+                        },
+                      ]
+                    : []
+                }
+              />
             </td>
           </tr>
         ))}
@@ -104,3 +94,4 @@ export const TeamTable: React.FC<TeamTableProps> = ({
   )
 }
 
+export default TeamTable

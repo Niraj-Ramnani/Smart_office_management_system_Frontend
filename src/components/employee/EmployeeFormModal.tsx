@@ -102,7 +102,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 placeholder="e.g. EMP-001"
                 value={employeeCode}
                 onChange={(e) => setEmployeeCode(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 font-mono"
               />
             </div>
             <div>
@@ -112,7 +112,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
               <select
                 value={employmentType}
                 onChange={(e) => setEmploymentType(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="Full-Time">Full-Time</option>
                 <option value="Part-Time">Part-Time</option>
@@ -132,7 +132,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <div>
@@ -144,7 +144,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 placeholder="employee@company.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-mono text-xs"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 font-mono text-xs"
               />
               <p className="text-[10px] text-slate-400 mt-0.5">
                 Matches their Microsoft Entra sign-in.
@@ -174,7 +174,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 required
                 value={roleName}
                 onChange={(e) => setRoleName(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="Employee">Employee (Desk Requests)</option>
                 <option value="Manager">Manager (Team Approvals)</option>
@@ -196,7 +196,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 placeholder="+1 555-0199"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-xs"
               />
             </div>
             <div>
@@ -206,7 +206,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
               <select
                 value={employeeStatus}
                 onChange={(e) => setEmployeeStatus(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="INACTIVE">INACTIVE</option>
@@ -225,7 +225,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 placeholder="e.g. Software Engineer"
                 value={designation}
                 onChange={(e) => setDesignation(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
             <div>
@@ -238,7 +238,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 placeholder="e.g. Engineering"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
           </div>
@@ -253,7 +253,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 onChange={(e) =>
                   setTeamId(e.target.value ? Number(e.target.value) : undefined)
                 }
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">No Team Assigned</option>
                 {teams.map((t) => (
@@ -272,7 +272,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
                 onChange={(e) =>
                   setManagerId(e.target.value ? Number(e.target.value) : undefined)
                 }
-                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="">No Direct Manager</option>
                 {employees
@@ -297,7 +297,7 @@ export const EmployeeFormModal: React.FC<EmployeeFormModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? 'Saving...' : editingEmployee ? 'Update Profile' : 'Onboard Employee'}
             </button>

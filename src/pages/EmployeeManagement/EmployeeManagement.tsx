@@ -1,9 +1,11 @@
+import { useMemo } from 'react'
 import {
   EmployeeFilterBar,
   EmployeeFormModal,
   EmployeeTable,
 } from '../../components/employee'
 import { useEmployeeManagement } from './useEmployeeManagement'
+import { useListSeatsQuery } from '../../store/api/seatApi'
 import {
   ConfirmDialog,
   NotificationBanner,
@@ -67,6 +69,15 @@ export const EmployeeManagement: React.FC = () => {
     handleToggleStatus,
   } = useEmployeeManagement()
 
+  const { data: allSeats = [] } = useListSeatsQuery()
+  const seatMap = useMemo(() => {
+    const map: Record<number, string> = {}
+    allSeats.forEach((s) => {
+      if (s.employee_id) map[s.employee_id] = s.seat_number
+    })
+    return map
+  }, [allSeats])
+
   const departments = Array.from(
     new Set(employees.map((e) => e.department).filter(Boolean))
   )
@@ -74,8 +85,12 @@ export const EmployeeManagement: React.FC = () => {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Employee Directory"
-        subtitle="Manage organization staff, roles, reporting lines, and departmental teams."
+        title={!isAdmin ? 'Team & Employee Seating' : 'Employee Directory'}
+        subtitle={
+          !isAdmin
+            ? 'View where all your employees are seated across office floors and workstation bays.'
+            : 'Manage organization staff, roles, reporting lines, and departmental teams.'
+        }
       />
 
       <NotificationBanner
@@ -113,6 +128,7 @@ export const EmployeeManagement: React.FC = () => {
         <EmployeeTable
           employees={employees}
           isAdmin={isAdmin}
+          seatMap={seatMap}
           onEdit={openEditModal}
           onToggleStatus={handleToggleStatus}
           onDeactivate={(id) => setDeactivateConfirmId(id)}

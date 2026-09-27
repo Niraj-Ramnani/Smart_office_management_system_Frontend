@@ -1,4 +1,7 @@
+import React from 'react'
 import { Routes, Route } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import type { RootState } from '../store/store'
 import { MainLayout } from '../layouts/MainLayout'
 import { LoginPage } from '../pages/LoginPage/LoginPage'
 import { NotFoundPage } from '../pages/NotFoundPage/NotFoundPage'
@@ -9,14 +12,25 @@ import { EmployeeManagement } from '../pages/EmployeeManagement/EmployeeManageme
 import { UserManagement } from '../pages/UserManagement/UserManagement'
 import { SeatingManagement } from '../pages/SeatingManagement/SeatingManagement'
 import { SeatRequestsPage } from '../pages/SeatRequests/SeatRequestsPage'
+import { EmployeeDashboard } from '../pages/EmployeeDashboard/EmployeeDashboard'
+import { AssetManagement } from '../pages/AssetManagement/AssetManagement'
 import { ProtectedRoute } from './ProtectedRoute'
 
-export const AppRoutes = () => {
+const WorkspaceIndex: React.FC = () => {
+  const user = useSelector((state: RootState) => state.auth.user)
+  if (user?.role === 'Employee') {
+    return <EmployeeDashboard />
+  }
+  return <SeatingManagement />
+}
+
+export const AppRoutes: React.FC = () => {
   return (
     <Routes>
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<MainLayout />}>
-          <Route index element={<SeatingManagement />} />
+          <Route index element={<WorkspaceIndex />} />
+          <Route path="dashboard" element={<EmployeeDashboard />} />
           <Route path="seats" element={<SeatingManagement />} />
           <Route path="seat-requests" element={<SeatRequestsPage />} />
 
@@ -28,6 +42,7 @@ export const AppRoutes = () => {
           </Route>
 
           <Route element={<ProtectedRoute requiredRole="Admin" />}>
+            <Route path="assets" element={<AssetManagement />} />
             <Route path="users" element={<UserManagement />} />
           </Route>
         </Route>
@@ -38,3 +53,5 @@ export const AppRoutes = () => {
     </Routes>
   )
 }
+
+export default AppRoutes

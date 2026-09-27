@@ -44,7 +44,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 space-y-4">
         <svg
-          className="animate-spin h-8 w-8 text-blue-600"
+          className="animate-spin h-8 w-8 text-orange-600"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"

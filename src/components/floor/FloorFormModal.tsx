@@ -56,7 +56,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
               required
               value={buildingId}
               onChange={(e) => setBuildingId(Number(e.target.value))}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value={0} disabled>
                 Select Building
@@ -79,7 +79,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
               placeholder="e.g. Ground Floor / Floor 1"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
@@ -92,7 +92,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
               required
               value={floorNumber}
               onChange={(e) => setFloorNumber(Number(e.target.value))}
-              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
@@ -107,7 +107,7 @@ export const FloorFormModal: React.FC<FloorFormModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting ? 'Saving...' : editingFloor ? 'Update Floor' : 'Create Floor'}
             </button>

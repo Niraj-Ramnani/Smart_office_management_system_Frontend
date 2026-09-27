@@ -103,7 +103,7 @@ export const AddSeatModal: React.FC<AddSeatModalProps> = ({
       <div className="bg-white rounded-2xl shadow-xl border border-slate-100 w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="p-5 border-b border-slate-100 flex items-center justify-between">
           <div className="flex items-center space-x-2.5">
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-sm">
               +
             </div>
             <div>
@@ -142,7 +142,7 @@ export const AddSeatModal: React.FC<AddSeatModalProps> = ({
                 value={seatNumber || `${detectedPrefix}${String(nextNumber).padStart(2, '0')}`}
                 onChange={(e) => setSeatNumber(e.target.value)}
                 placeholder="e.g. NB GF 45"
-                className="w-full px-3 py-2 text-sm font-mono font-semibold rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-sm font-mono font-semibold rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
               <p className="text-[11px] text-slate-400 mt-1">
                 Suggested automatically as the next desk on this floor. You can edit if needed.
@@ -162,7 +162,7 @@ export const AddSeatModal: React.FC<AddSeatModalProps> = ({
                       onClick={() => setMultipleCount(cnt)}
                       className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition cursor-pointer ${
                         multipleCount === cnt
-                          ? 'bg-blue-600 text-white border-blue-600'
+                          ? 'bg-zinc-900 text-white border-zinc-900'
                           : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
@@ -177,13 +177,13 @@ export const AddSeatModal: React.FC<AddSeatModalProps> = ({
                   required
                   value={multipleCount}
                   onChange={(e) => setMultipleCount(Math.max(1, Number(e.target.value) || 1))}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
 
-              <div className="p-3 bg-blue-50/60 border border-blue-100 rounded-xl text-xs text-blue-900 space-y-1">
+              <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 space-y-1">
                 <span className="font-semibold block">Batch preview:</span>
-                <p className="text-[11px] text-blue-700 font-mono">
+                <p className="text-[11px] text-slate-600 font-mono">
                   {detectedPrefix}{String(nextNumber).padStart(2, '0')} ... {detectedPrefix}{String(nextNumber + multipleCount - 1).padStart(2, '0')} ({multipleCount} desks)
                 </p>
               </div>
@@ -196,7 +196,7 @@ export const AddSeatModal: React.FC<AddSeatModalProps> = ({
                 type="checkbox"
                 checked={isMultiple}
                 onChange={(e) => setIsMultiple(e.target.checked)}
-                className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+                className="rounded text-orange-600 focus:ring-orange-500 h-4 w-4"
               />
               <span>Add multiple desks in sequence</span>
             </label>
@@ -213,7 +213,7 @@ export const AddSeatModal: React.FC<AddSeatModalProps> = ({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition disabled:opacity-50 cursor-pointer"
+              className="flex-1 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold shadow-xs transition disabled:opacity-50 cursor-pointer"
             >
               {isSubmitting
                 ? 'Adding...'

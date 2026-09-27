@@ -86,7 +86,7 @@ export const UserCsvModal: React.FC<UserCsvModalProps> = ({
             <button
               type="button"
               onClick={downloadSampleCsv}
-              className="text-blue-600 hover:text-blue-800 font-semibold underline cursor-pointer"
+              className="text-orange-600 hover:text-orange-800 font-semibold underline cursor-pointer"
             >
               Download Sample CSV Template
             </button>
@@ -107,7 +107,7 @@ export const UserCsvModal: React.FC<UserCsvModalProps> = ({
             type="file"
             accept=".csv"
             onChange={handleFileChange}
-            className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer border border-slate-300 rounded-lg p-2"
+            className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100 cursor-pointer border border-slate-300 rounded-lg p-2"
           />
         </div>
 
@@ -165,7 +165,7 @@ export const UserCsvModal: React.FC<UserCsvModalProps> = ({
             type="button"
             disabled={!file || isLoading}
             onClick={handleUpload}
-            className="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
+            className="px-4 py-2 text-xs font-semibold text-white bg-orange-600 hover:bg-orange-700 rounded-lg shadow-sm disabled:opacity-50 cursor-pointer"
           >
             {isLoading ? 'Validating & Provisioning...' : 'Upload & Provision'}
           </button>

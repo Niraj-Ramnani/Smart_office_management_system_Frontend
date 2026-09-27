@@ -38,7 +38,7 @@ export const EmployeeFilterBar: React.FC<EmployeeFilterBarProps> = ({
             placeholder="Name, code, designation, email..."
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
 
@@ -49,7 +49,7 @@ export const EmployeeFilterBar: React.FC<EmployeeFilterBarProps> = ({
           <select
             value={selectedDepartment}
             onChange={(e) => onDepartmentChange(e.target.value)}
-            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="">All Departments</option>
             {departments.map((d) => (
@@ -69,7 +69,7 @@ export const EmployeeFilterBar: React.FC<EmployeeFilterBarProps> = ({
             onChange={(e) =>
               onTeamChange(e.target.value ? Number(e.target.value) : undefined)
             }
-            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="">All Teams</option>
             {teams.map((t) => (
@@ -87,7 +87,7 @@ export const EmployeeFilterBar: React.FC<EmployeeFilterBarProps> = ({
           <select
             value={selectedStatus}
             onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-1.5 text-sm rounded-lg border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             <option value="">All Statuses</option>
             <option value="ACTIVE">Active</option>

@@ -57,7 +57,7 @@ export const BuildingManagement: React.FC = () => {
             <button
               type="button"
               onClick={openCreateModal}
-              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-lg hover:bg-orange-700 shadow-sm transition-colors cursor-pointer"
             >
               + Add Building
             </button>
@@ -97,7 +97,7 @@ export const BuildingManagement: React.FC = () => {
             <button
               type="button"
               onClick={openCreateModal}
-              className="px-4 py-2 text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors cursor-pointer"
             >
               + Register First Building
             </button>
