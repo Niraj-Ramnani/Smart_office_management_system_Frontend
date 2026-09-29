@@ -4,14 +4,19 @@ import { baseApi } from './api/baseApi'
 import './api'
 
 import authReducer from './slices/authSlice'
+import toastReducer from './slices/toastSlice'
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     auth: authReducer,
+    toast: toastReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(baseApi.middleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }).concat(baseApi.middleware),
 })
 
 setupListeners(store.dispatch)

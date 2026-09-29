@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   useGetAllSeatRequestsQuery,
   useGetApprovedSeatRequestsQuery,
@@ -6,6 +7,10 @@ import {
   useGetTeamSeatRequestsQuery,
 } from '../../store/api/seatRequestApi'
 import { useGetMeQuery } from '../../store/api/baseApi'
+import {
+  useGetNotificationsQuery,
+  useMarkAllNotificationsReadMutation,
+} from '../../store/api/notificationApi'
 import type { SeatRequest } from '../../types'
 import { SeatRequestTable } from '../../components/seatRequest/SeatRequestTable'
 import { SeatRequestModal } from '../../components/seatRequest/SeatRequestModal'
@@ -13,6 +18,12 @@ import { SeatRequestReviewModal } from '../../components/seatRequest/SeatRequest
 import { SeatRequestExecuteModal } from '../../components/seatRequest/SeatRequestExecuteModal'
 
 export const SeatRequestsPage: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const queryAction = searchParams.get('action')
+  const querySeatId = searchParams.get('seatId') ? Number(searchParams.get('seatId')) : null
+  const querySeatNumber = searchParams.get('seatNumber') || ''
+  const queryType = (searchParams.get('type') as any) || 'RELOCATION'
+
   const { data: currentUser } = useGetMeQuery()
   const roleName = currentUser?.role || ''
   const isManager = roleName === 'Manager' || roleName === 'Admin'
@@ -22,24 +33,36 @@ export const SeatRequestsPage: React.FC = () => {
     'my' | 'team' | 'ops_seating' | 'it_asset' | 'all'
   >(isManager && !isAdmin ? 'team' : isAdmin ? 'ops_seating' : 'my')
 
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(Boolean(queryAction === 'new' || querySeatId))
   const [reviewRequest, setReviewRequest] = useState<{
     req: SeatRequest
     action: 'APPROVE' | 'REJECT'
   } | null>(null)
   const [executeRequest, setExecuteRequest] = useState<SeatRequest | null>(null)
 
-  const { data: myRequests = [], isLoading: isMyLoading } = useGetMySeatRequestsQuery()
+  useEffect(() => {
+    if (queryAction === 'new' || querySeatId) {
+      setIsCreateModalOpen(true)
+    }
+  }, [queryAction, querySeatId])
+
+  const { data: myRequests = [], isLoading: isMyLoading } = useGetMySeatRequestsQuery(undefined, {
+    pollingInterval: 10000,
+  })
   const { data: teamRequests = [], isLoading: isTeamLoading } = useGetTeamSeatRequestsQuery(
     undefined,
-    { skip: !isManager }
+    { skip: !isManager, pollingInterval: 10000 }
   )
   const { data: approvedRequests = [], isLoading: isApprovedLoading } =
-    useGetApprovedSeatRequestsQuery(undefined, { skip: !isAdmin })
+    useGetApprovedSeatRequestsQuery(undefined, { skip: !isAdmin, pollingInterval: 10000 })
   const { data: allRequests = [], isLoading: isAllLoading } = useGetAllSeatRequestsQuery(
     undefined,
-    { skip: !isAdmin }
+    { skip: !isAdmin, pollingInterval: 10000 }
   )
+
+  const { data: notifData } = useGetNotificationsQuery(undefined, { pollingInterval: 10000 })
+  const [markAllRead] = useMarkAllNotificationsReadMutation()
+  const unreadNotifCount = notifData?.unread_count || 0
 
   const pendingTeamApprovals = teamRequests.filter((r) => r.status === 'PENDING')
   const opsSeatingApproved = approvedRequests.filter(
@@ -92,30 +115,63 @@ export const SeatRequestsPage: React.FC = () => {
         </button>
       </div>
 
+      {unreadNotifCount > 0 && (
+        <div className="bg-orange-50 border border-orange-200/90 rounded-xl px-4 py-3 flex items-center justify-between shadow-xs">
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2.5 w-2.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+            </span>
+            <span className="text-xs font-semibold text-slate-800">
+              You have {unreadNotifCount} unread request & approval notification{unreadNotifCount > 1 ? 's' : ''}.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => markAllRead()}
+            className="text-xs font-semibold text-orange-600 hover:text-orange-800 hover:underline cursor-pointer"
+          >
+            Mark all read
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center space-x-1 border-b border-slate-200 overflow-x-auto">
         {isAdmin && (
           <>
             <button
               type="button"
               onClick={() => setActiveTab('ops_seating')}
-              className={`py-2.5 px-3.5 text-xs font-medium transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
+              className={`py-2.5 px-3.5 text-xs font-medium transition-colors border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
                 activeTab === 'ops_seating'
                   ? 'border-orange-600 text-orange-600 font-semibold'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
-              Admin/Ops Seating ({opsSeatingApproved.length})
+              <span>Admin/Ops Seating ({opsSeatingApproved.length})</span>
+              {opsSeatingApproved.length > 0 && (
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+              )}
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('it_asset')}
-              className={`py-2.5 px-3.5 text-xs font-medium transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
+              className={`py-2.5 px-3.5 text-xs font-medium transition-colors border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
                 activeTab === 'it_asset'
                   ? 'border-orange-600 text-orange-600 font-semibold'
                   : 'border-transparent text-slate-600 hover:text-slate-900'
               }`}
             >
-              Admin/IT Asset ({itAssetApproved.length})
+              <span>Admin/IT Asset ({itAssetApproved.length})</span>
+              {itAssetApproved.length > 0 && (
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
+              )}
             </button>
           </>
         )}
@@ -124,13 +180,19 @@ export const SeatRequestsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab('team')}
-            className={`py-2.5 px-3.5 text-xs font-medium transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
+            className={`py-2.5 px-3.5 text-xs font-medium transition-colors border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 ${
               activeTab === 'team'
                 ? 'border-orange-600 text-orange-600 font-semibold'
                 : 'border-transparent text-slate-600 hover:text-slate-900'
             }`}
           >
-            Pending Approvals ({pendingTeamApprovals.length})
+            <span>Pending Approvals ({pendingTeamApprovals.length})</span>
+            {pendingTeamApprovals.length > 0 && (
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              </span>
+            )}
           </button>
         )}
 
@@ -234,8 +296,16 @@ export const SeatRequestsPage: React.FC = () => {
       </div>
 
       <SeatRequestModal
+        key={isCreateModalOpen ? `seat-req-page-${querySeatId || 'none'}` : 'closed'}
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        initialSeat={querySeatId ? { id: querySeatId, seat_number: querySeatNumber || `Desk #${querySeatId}` } : null}
+        initialType={queryType}
+        onClose={() => {
+          setIsCreateModalOpen(false)
+          if (queryAction || querySeatId) {
+            setSearchParams({})
+          }
+        }}
       />
 
       <SeatRequestReviewModal

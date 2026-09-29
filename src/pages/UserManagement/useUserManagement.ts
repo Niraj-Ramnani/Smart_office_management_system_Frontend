@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useSearchParams } from 'react-router-dom'
 import type { RootState } from '../../store/store'
 import {
+  useDeleteUserMutation,
   useGetRolesQuery,
   useGetUsersQuery,
   useUpdateUserRoleMutation,
@@ -143,6 +144,22 @@ export const useUserManagement = () => {
     }
   }
 
+  const [deleteUser] = useDeleteUserMutation()
+
+  const handleDeleteUser = async (userId: number, email: string) => {
+    feedback.clearFeedback()
+    if (!window.confirm(`Are you sure you want to permanently delete user account '${email}'?`)) {
+      return
+    }
+    try {
+      await deleteUser(userId).unwrap()
+      feedback.notifySuccess(`User account '${email}' successfully deleted`)
+      refetch()
+    } catch (err) {
+      feedback.notifyError(err, 'Failed to delete user account')
+    }
+  }
+
   const filteredUsers = users.filter(
     (u) =>
       u.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -168,6 +185,7 @@ export const useUserManagement = () => {
     setActionSuccess: feedback.setActionSuccess,
     handleRoleChange,
     handleToggleActive,
+    handleDeleteUser,
     isSubmitting: isUpdatingRole || isUpdatingStatus,
     teams,
     onboardModalOpen,

@@ -34,6 +34,7 @@ export const UserManagement: React.FC = () => {
     setActionSuccess,
     handleRoleChange,
     handleToggleActive,
+    handleDeleteUser,
     teams,
     onboardModalOpen,
     openOnboardModal,
@@ -144,6 +145,7 @@ export const UserManagement: React.FC = () => {
             navigate(`/employees?search=${encodeURIComponent(term)}`)
           }
           onToggleActive={handleToggleActive}
+          onDeleteUser={handleDeleteUser}
         />
       </TableCard>
 

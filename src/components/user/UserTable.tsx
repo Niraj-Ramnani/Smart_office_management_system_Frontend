@@ -9,6 +9,7 @@ export interface UserTableProps {
   onRoleChange: (userId: number, newRole: string) => void
   onViewEmployee: (searchTerm: string) => void
   onToggleActive: (userId: number, currentActive: boolean) => void
+  onDeleteUser?: (userId: number, email: string) => void
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
@@ -17,6 +18,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   onRoleChange,
   onViewEmployee,
   onToggleActive,
+  onDeleteUser,
 }) => {
   return (
     <table className="w-full text-left text-xs text-slate-600">
@@ -78,6 +80,15 @@ export const UserTable: React.FC<UserTableProps> = ({
                     onClick: () => onToggleActive(u.id, u.is_active),
                     isDestructive: u.is_active,
                   },
+                  ...(onDeleteUser && u.email !== 'neerajramnani800@gmail.com'
+                    ? [
+                        {
+                          label: 'Delete User Account',
+                          onClick: () => onDeleteUser(u.id, u.email),
+                          isDestructive: true,
+                        },
+                      ]
+                    : []),
                 ]}
               />
             </td>

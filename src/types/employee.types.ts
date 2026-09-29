@@ -61,13 +61,24 @@ export interface EmployeeFilterParams {
 
 export interface CSVRowError {
   row: number
+  employee?: string
   field: string
   message: string
+}
+
+export interface CSVValidationResponse {
+  total_rows: number
+  valid_count: number
+  to_create_count: number
+  to_update_count: number
+  failed_count: number
+  errors: CSVRowError[]
 }
 
 export interface CSVImportSummary {
   total_rows: number
   imported_count: number
+  updated_count?: number
   failed_count: number
   errors: CSVRowError[]
 }

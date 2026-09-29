@@ -14,7 +14,7 @@ export const NotificationBell: React.FC = () => {
   const navigate = useNavigate()
 
   const { data } = useGetNotificationsQuery(undefined, {
-    pollingInterval: 30000,
+    pollingInterval: 10000,
   })
   const [markRead] = useMarkNotificationReadMutation()
   const [markAllRead, { isLoading: isMarkingAll }] = useMarkAllNotificationsReadMutation()
@@ -45,11 +45,16 @@ export const NotificationBell: React.FC = () => {
       item.reference_type === 'SEAT_REQUEST' ||
       item.notification_type === 'REQUEST' ||
       item.notification_type === 'APPROVAL' ||
-      item.notification_type === 'SWAP_CONSENT'
+      item.notification_type === 'SWAP_CONSENT' ||
+      item.title.toLowerCase().includes('request') ||
+      item.title.toLowerCase().includes('approval') ||
+      item.title.toLowerCase().includes('seat')
     ) {
       navigate('/seat-requests')
     } else if (item.reference_type === 'ASSET' || item.notification_type === 'ASSET') {
-      navigate('/assets')
+      navigate('/seat-requests')
+    } else {
+      navigate('/seat-requests')
     }
   }
 
@@ -75,12 +80,22 @@ export const NotificationBell: React.FC = () => {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-1.5 rounded-md text-slate-300 hover:text-white hover:bg-slate-800 transition-colors focus:outline-none cursor-pointer"
-        aria-label="Notifications"
+        className={`relative p-2.5 rounded-xl transition-colors focus:outline-none cursor-pointer ${
+          unreadCount > 0
+            ? 'text-orange-400 bg-orange-500/10 hover:bg-orange-500/20 hover:text-orange-300'
+            : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
+        }`}
+        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
       >
+
+        {unreadCount > 0 && (
+          <span className="absolute inset-0 rounded-xl border border-red-500/50 animate-ping opacity-60 pointer-events-none" />
+        )}
+
         <svg
-          className="w-4.5 h-4.5"
+          className="w-6 h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -88,39 +103,43 @@ export const NotificationBell: React.FC = () => {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth="1.75"
+            strokeWidth={1.75}
             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
           />
         </svg>
 
         {unreadCount > 0 && (
-          <span className="absolute top-0.5 right-0.5 flex items-center justify-center min-w-[16px] h-4 px-1 text-[10px] font-bold text-white bg-orange-600 rounded-full">
+          <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-600 rounded-full shadow-md ring-1 ring-zinc-950">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-100">
-          <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold text-xs text-slate-800">Notifications</span>
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-2xl border border-slate-200 z-50 overflow-hidden">
+          <div className="px-4 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-[13px] text-slate-800">Notifications</span>
               {unreadCount > 0 && (
-                <span className="bg-orange-100 text-orange-800 text-[10px] font-semibold px-2 py-0.2 rounded-md">
+                <span className="flex items-center gap-1 bg-red-100 text-red-700 text-[11px] font-bold px-2 py-0.5 rounded-full">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
                   {unreadCount} new
                 </span>
               )}
             </div>
-            {notifications.length > 0 && (
-              <button
-                type="button"
-                onClick={handleMarkAll}
-                disabled={isMarkingAll}
-                className="text-[11px] font-medium text-slate-600 hover:text-orange-600 transition-colors cursor-pointer disabled:opacity-50"
-              >
-                {isMarkingAll ? 'Clearing...' : 'Mark all as read'}
-              </button>
-            )}
+
+            <div className="flex items-center gap-2">
+              {notifications.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleMarkAll}
+                  disabled={isMarkingAll}
+                  className="text-[11px] font-medium text-slate-600 hover:text-orange-600 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {isMarkingAll ? 'Clearing...' : 'Mark all read'}
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="max-h-80 card-scroll divide-y divide-slate-100">
@@ -134,26 +153,31 @@ export const NotificationBell: React.FC = () => {
                   key={n.id}
                   onClick={() => handleNotificationClick(n)}
                   className={`p-3.5 transition-colors cursor-pointer hover:bg-slate-50 flex items-start space-x-3 group relative ${
-                    !n.is_read ? 'bg-orange-50/20 border-l-2 border-orange-500' : ''
+                    !n.is_read ? 'bg-orange-50/30 border-l-2 border-red-500' : ''
                   }`}
                 >
                   <div className="mt-1 shrink-0">
                     {!n.is_read ? (
-                      <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block" />
+                      <span className="w-2 h-2 rounded-full bg-red-500 block animate-pulse" />
                     ) : (
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-300 block" />
                     )}
                   </div>
                   <div className="flex-1 min-w-0 pr-6">
-                    <p className={`text-xs ${!n.is_read ? 'font-semibold text-slate-900' : 'font-medium text-slate-700'}`}>
+                    <p className={`text-xs ${!n.is_read ? 'font-bold text-slate-900' : 'font-medium text-slate-700'}`}>
                       {n.title}
                     </p>
                     <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-2">
                       {n.message}
                     </p>
-                    <p className="text-[10px] text-slate-400 mt-1">
-                      {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {new Date(n.created_at).toLocaleDateString()}
-                    </p>
+                    <div className="flex items-center justify-between mt-1">
+                      <p className="text-[10px] text-slate-400">
+                        {new Date(n.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {new Date(n.created_at).toLocaleDateString()}
+                      </p>
+                      <span className="text-[10px] font-semibold text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        View request &rarr;
+                      </span>
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -168,6 +192,22 @@ export const NotificationBell: React.FC = () => {
                 </div>
               ))
             )}
+          </div>
+
+          <div className="p-2.5 bg-slate-50 border-t border-slate-100">
+            <button
+              type="button"
+              onClick={() => {
+                setIsOpen(false)
+                navigate('/seat-requests')
+              }}
+              className="w-full text-center text-xs font-semibold text-orange-600 hover:text-orange-700 py-1 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>Go to Requests & Approvals</span>
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
           </div>
         </div>
       )}

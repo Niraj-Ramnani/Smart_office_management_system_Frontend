@@ -26,9 +26,15 @@ export const EmployeeDashboard: React.FC = () => {
     skip: !employeeId,
   })
 
-  const { data: myAssets = [], isLoading: isAssetsLoading } = useGetMyAssetsQuery()
-  const { data: myRequests = [], isLoading: isRequestsLoading } = useGetMySeatRequestsQuery()
-  const { data: allSeats = [] } = useListSeatsQuery()
+  const { data: myAssets = [], isLoading: isAssetsLoading } = useGetMyAssetsQuery(undefined, {
+    pollingInterval: 12000,
+  })
+  const { data: myRequests = [], isLoading: isRequestsLoading } = useGetMySeatRequestsQuery(undefined, {
+    pollingInterval: 12000,
+  })
+  const { data: allSeats = [] } = useListSeatsQuery(undefined, {
+    pollingInterval: 12000,
+  })
 
   const [respondConsent, { isLoading: isRespondingConsent }] = useRespondSwapConsentMutation()
 
@@ -82,31 +88,31 @@ export const EmployeeDashboard: React.FC = () => {
   })
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-zinc-950 p-5 rounded-xl text-white border border-zinc-800 shadow-xs">
-        <div className="space-y-1">
-          <h1 className="text-lg font-bold tracking-tight text-white">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-5 bg-zinc-950 px-7 py-6 rounded-xl text-white border border-zinc-800 shadow-sm">
+        <div className="space-y-1.5">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
             Welcome, {employee ? `${employee.first_name} ${employee.last_name}` : 'Employee'}
           </h1>
-          <p className="text-xs text-zinc-400">
-            {employee?.designation || 'Team Member'} · {employee?.department || 'Department'} · {effectiveUser?.email}
+          <p className="text-[13px] text-zinc-400">
+            {employee?.designation || 'Team Member'} &nbsp;·&nbsp; {employee?.department || 'Department'} &nbsp;·&nbsp; {effectiveUser?.email}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             onClick={() => openActionModal('SEAT_CHANGE')}
-            className="py-1.5 px-3 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-medium text-xs shadow-xs transition-colors cursor-pointer flex items-center space-x-1.5"
+            className="py-2 px-4 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-semibold text-[13px] shadow-sm transition-colors cursor-pointer"
           >
-            <span>Request Seat Change</span>
+            Request Seat Change
           </button>
           <button
             type="button"
             onClick={() => openActionModal('ASSET_NEW')}
-            className="py-1.5 px-3 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-medium text-xs border border-zinc-700 transition-colors cursor-pointer flex items-center space-x-1.5"
+            className="py-2 px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-[13px] border border-zinc-700 transition-colors cursor-pointer"
           >
-            <span>Request Equipment</span>
+            Request Equipment
           </button>
         </div>
       </div>
@@ -158,152 +164,148 @@ export const EmployeeDashboard: React.FC = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-              <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
                 Workstation Details
               </span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
             </div>
 
             {currentSeat ? (
-              <div className="space-y-3">
-                <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
                     Assigned Desk
                   </div>
-                  <div className="text-xl font-bold text-slate-900 mt-0.5 font-mono">
+                  <div className="text-2xl font-bold text-slate-900 mt-1 font-mono">
                     {currentSeat.seat_number}
                   </div>
-                  <div className="text-xs text-slate-600 mt-1 flex items-center space-x-2">
+                  <div className="text-[13px] text-slate-500 mt-1.5 flex items-center gap-2">
                     <span>Floor {currentSeat.floor_id}</span>
-                    <span>•</span>
+                    <span className="text-slate-300">•</span>
                     <span className="capitalize">{currentSeat.seat_type}</span>
                   </div>
                 </div>
 
-                <div className="text-xs text-slate-500 space-y-1">
-                  <div>Employee Code: <span className="text-slate-800 font-medium">{employee?.employee_code || '—'}</span></div>
-                  <div>Department: <span className="text-slate-800 font-medium">{employee?.department || '—'}</span></div>
+                <div className="text-[13px] text-slate-500 space-y-1.5">
+                  <div>Employee Code: <span className="text-slate-800 font-semibold">{employee?.employee_code || '—'}</span></div>
+                  <div>Department: <span className="text-slate-800 font-semibold">{employee?.department || '—'}</span></div>
                 </div>
               </div>
             ) : (
-              <div className="p-5 text-center rounded-lg bg-slate-50 border border-dashed border-slate-200 space-y-1.5">
-                <p className="text-xs font-medium text-slate-700">No seat assigned currently</p>
-                <p className="text-[11px] text-slate-400">
-                  Submit a request to have a seat assigned by your manager and ops team.
+              <div className="py-8 text-center rounded-xl bg-slate-50 border border-dashed border-slate-200 space-y-2">
+                <p className="text-[13px] font-semibold text-slate-700">No seat assigned currently</p>
+                <p className="text-xs text-slate-400">
+                  Submit a request to have a seat assigned by your manager.
                 </p>
               </div>
             )}
           </div>
 
-          <div className="pt-3 mt-4 border-t border-slate-100">
+          <div className="pt-4 mt-5 border-t border-slate-100">
             <button
               type="button"
               onClick={() => openActionModal('SEAT_CHANGE')}
-              className="w-full py-1.5 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+              className="w-full py-2 px-3 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 text-[13px] font-medium transition-colors cursor-pointer"
             >
               Request Relocation or Swap
             </button>
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between">
-          <div>
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-              <div>
-                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                  Assigned Hardware & Assets ({myAssets.length})
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => openActionModal('ASSET_NEW')}
-                className="text-xs font-medium text-orange-600 hover:text-orange-700 transition-colors cursor-pointer"
-              >
-                + Request Equipment
-              </button>
+        <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col">
+          <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+              Assigned Hardware &amp; Assets ({myAssets.length})
+            </span>
+            <button
+              type="button"
+              onClick={() => openActionModal('ASSET_NEW')}
+              className="text-[13px] font-semibold text-orange-600 hover:text-orange-700 transition-colors cursor-pointer"
+            >
+              + Request Equipment
+            </button>
+          </div>
+
+          {isAssetsLoading ? (
+            <div className="py-10 text-center text-[13px] text-slate-400">Loading your assets...</div>
+          ) : myAssets.length === 0 ? (
+            <div className="py-10 text-center rounded-xl bg-slate-50 border border-dashed border-slate-200 space-y-2">
+              <p className="text-[13px] font-semibold text-slate-700">No equipment currently assigned</p>
+              <p className="text-xs text-slate-400">
+                Click 'Request Equipment' to order a monitor, mouse, headset, or charger.
+              </p>
             </div>
-
-            {isAssetsLoading ? (
-              <div className="py-8 text-center text-xs text-slate-400">Loading your assets...</div>
-            ) : myAssets.length === 0 ? (
-              <div className="p-5 text-center rounded-lg bg-slate-50 border border-dashed border-slate-200 space-y-1.5">
-                <p className="text-xs font-medium text-slate-700">No equipment currently assigned</p>
-                <p className="text-[11px] text-slate-400">
-                  Click 'Request Equipment' to order a monitor, mouse, headset, or charger.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-60 card-scroll pr-1">
-                {myAssets.map((asset) => (
-                  <div
-                    key={asset.id}
-                    className="p-3 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors flex flex-col justify-between"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-xs font-bold text-slate-800">
-                            {asset.asset_type}
-                          </div>
-                          <div className="text-[10px] text-slate-400 font-mono">
-                            {asset.asset_code}
-                          </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-72 card-scroll pr-1">
+              {myAssets.map((asset) => (
+                <div
+                  key={asset.id}
+                  className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-colors flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="text-[13.5px] font-bold text-slate-800">
+                          {asset.asset_type}
                         </div>
-                        <Badge status={asset.status} />
+                        <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+                          {asset.asset_code}
+                        </div>
                       </div>
-
-                      <div className="mt-2 text-[11px] text-slate-500 space-y-0.5">
-                        {asset.model_name && <div>Model: <span className="text-slate-700 font-medium">{asset.model_name}</span></div>}
-                        {asset.serial_number && <div>S/N: <span className="text-slate-700 font-mono text-[10px]">{asset.serial_number}</span></div>}
-                      </div>
+                      <Badge status={asset.status} />
                     </div>
 
-                    <div className="flex items-center space-x-2 pt-2.5 mt-2.5 border-t border-slate-100">
-                      <button
-                        type="button"
-                        onClick={() => openActionModal('ASSET_MAINTENANCE', asset)}
-                        className="flex-1 py-1 px-2 rounded-md bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-medium text-slate-700 transition-colors cursor-pointer"
-                      >
-                        Report Issue
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => openActionModal('ASSET_REPLACEMENT', asset)}
-                        className="flex-1 py-1 px-2 rounded-md bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-medium text-slate-700 transition-colors cursor-pointer"
-                      >
-                        Replace
-                      </button>
+                    <div className="mt-2.5 text-[12px] text-slate-500 space-y-1">
+                      {asset.model_name && <div>Model: <span className="text-slate-700 font-medium">{asset.model_name}</span></div>}
+                      {asset.serial_number && <div>S/N: <span className="text-slate-700 font-mono text-[11px]">{asset.serial_number}</span></div>}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+
+                  <div className="flex items-center gap-2 pt-3 mt-3 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => openActionModal('ASSET_MAINTENANCE', asset)}
+                      className="flex-1 py-1.5 px-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[12px] font-medium text-slate-700 transition-colors cursor-pointer"
+                    >
+                      Report Issue
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openActionModal('ASSET_REPLACEMENT', asset)}
+                      className="flex-1 py-1.5 px-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[12px] font-medium text-slate-700 transition-colors cursor-pointer"
+                    >
+                      Replace
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs space-y-3.5">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-2.5 border-b border-slate-100">
+      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-100">
           <div>
-            <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+            <h2 className="text-[16px] font-bold text-slate-900 tracking-tight">
               My Request History
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Track seating moves, hardware allocations, and maintenance requests
+            <p className="text-[13px] text-slate-500 mt-0.5">
+              Track seating moves, hardware, and maintenance requests
             </p>
           </div>
 
-          <div className="flex items-center space-x-1.5">
+          <div className="flex items-center gap-1.5">
             {(['ALL', 'PENDING', 'RESOLVED'] as const).map((tab) => (
               <button
                 key={tab}
                 type="button"
                 onClick={() => setRequestFilter(tab)}
-                className={`py-1 px-2.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
+                className={`py-1.5 px-3.5 rounded-lg text-[13px] font-medium transition-colors cursor-pointer ${
                   requestFilter === tab
                     ? 'bg-zinc-900 text-white'
                     : 'text-slate-600 hover:bg-slate-100'
@@ -323,60 +325,60 @@ export const EmployeeDashboard: React.FC = () => {
           </div>
         ) : (
           <div className="table-scroll">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-50/80 text-[11px] uppercase font-semibold text-slate-500 border-b border-slate-200 tracking-wider">
+            <table className="w-full text-left text-[13px] text-slate-600">
+              <thead className="bg-slate-50/80 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200 tracking-widest">
                 <tr>
-                  <th className="px-4 py-2.5">ID</th>
-                  <th className="px-4 py-2.5">Type</th>
-                  <th className="px-4 py-2.5">Details</th>
-                  <th className="px-4 py-2.5 text-center">Status</th>
-                  <th className="px-4 py-2.5">Workflow Progress</th>
-                  <th className="px-4 py-2.5">Date</th>
+                  <th className="px-4 py-3">ID</th>
+                  <th className="px-4 py-3">Type</th>
+                  <th className="px-4 py-3">Details</th>
+                  <th className="px-4 py-3 text-center">Status</th>
+                  <th className="px-4 py-3">Workflow Progress</th>
+                  <th className="px-4 py-3">Date</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
                 {filteredRequests.map((r) => (
                   <tr key={r.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="px-4 py-3 font-mono font-semibold text-slate-500">#{r.id}</td>
-                    <td className="px-4 py-3">
-                      <span className="font-medium text-slate-800 bg-slate-100 px-2 py-0.5 rounded text-[11px]">
+                    <td className="px-4 py-3.5 font-mono font-semibold text-slate-500">#{r.id}</td>
+                    <td className="px-4 py-3.5">
+                      <span className="font-semibold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-md text-[12px]">
                         {r.request_type}
                       </span>
                     </td>
-                    <td className="px-4 py-3 max-w-xs space-y-0.5">
+                    <td className="px-4 py-3.5 max-w-xs space-y-1">
                       {r.asset_type && (
                         <div className="text-slate-800 font-medium">
                           Asset: {r.asset_type} {r.asset_code ? `(${r.asset_code})` : ''}
                         </div>
                       )}
                       {r.details?.preferred_seat_id && (
-                        <div className="text-slate-700 font-medium text-[11px]">
+                        <div className="text-slate-700 font-medium text-[12px]">
                           Target Desk: #{r.details.preferred_seat_id}
                         </div>
                       )}
                       {r.details?.target_employee_name && (
-                        <div className="text-slate-700 font-medium text-[11px]">
+                        <div className="text-slate-700 font-medium text-[12px]">
                           Swap with: {r.details.target_employee_name}
                         </div>
                       )}
                       {r.details?.reason && (
-                        <div className="text-slate-500 truncate text-[11px]">"{r.details.reason}"</div>
+                        <div className="text-slate-500 truncate text-[12px]">"{r.details.reason}"</div>
                       )}
                       {r.rejected_reason && (
-                        <div className="text-[11px] text-rose-600 italic">
+                        <div className="text-[12px] text-rose-600 italic">
                           Rejection: {r.rejected_reason}
                         </div>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-3.5 text-center">
                       <Badge status={r.status} showDot />
                     </td>
-                    <td className="px-4 py-3 text-slate-600 text-[11px]">
+                    <td className="px-4 py-3.5 text-slate-600 text-[12px]">
                       {r.approver_name && <div>Approved by: {r.approver_name}</div>}
                       {r.executor_name && <div>Executed by: {r.executor_name}</div>}
                       {!r.approver_name && !r.executor_name && <span className="text-slate-400">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-slate-400 text-[11px] whitespace-nowrap">
+                    <td className="px-4 py-3.5 text-slate-400 text-[12px] whitespace-nowrap">
                       {new Date(r.created_at).toLocaleDateString()}
                     </td>
                   </tr>

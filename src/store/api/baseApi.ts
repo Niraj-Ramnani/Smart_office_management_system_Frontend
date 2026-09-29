@@ -9,6 +9,8 @@ const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
 
 export const baseApi = createApi({
   reducerPath: 'api',
+  refetchOnFocus: true,
+  refetchOnReconnect: true,
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: async (headers) => {

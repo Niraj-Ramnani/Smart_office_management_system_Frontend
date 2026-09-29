@@ -184,6 +184,16 @@ const EmployeeRequestModalForm: React.FC<Omit<EmployeeRequestModalProps, 'isOpen
               <p className="text-[11px] text-slate-400 mt-1">
                 If the desk is occupied, a seat swap request will be sent to the current occupant for consent.
               </p>
+              <div className="flex items-center justify-between text-[11px] text-slate-500 mt-2.5 p-2.5 bg-orange-50/60 rounded-xl border border-orange-200/60">
+                <span>Want to see where desks are located?</span>
+                <a
+                  href="/seats"
+                  className="font-semibold text-orange-600 hover:text-orange-700 hover:underline"
+                  onClick={handleClose}
+                >
+                  Browse Seating Map &rarr;
+                </a>
+              </div>
             </div>
           )}
 

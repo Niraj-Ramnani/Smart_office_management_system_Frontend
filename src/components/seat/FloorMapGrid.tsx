@@ -156,7 +156,7 @@ export const FloorMapGrid: React.FC<FloorMapGridProps> = ({
 
   return (
     <div className="space-y-5">
-      {/* ─── Search + Filter Toolbar ─── */}
+
       <div className="bg-white rounded-xl p-3.5 border border-slate-200 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex-1 min-w-[240px]">
@@ -244,7 +244,6 @@ export const FloorMapGrid: React.FC<FloorMapGridProps> = ({
         </div>
       </div>
 
-      {/* ─── Floor Map Content ─── */}
       {filteredSeats.length === 0 ? (
         <div className="bg-white rounded-xl p-10 text-center border border-slate-200 shadow-xs">
           <p className="text-slate-600 font-medium text-xs">No desks match your filter criteria.</p>

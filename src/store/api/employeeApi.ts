@@ -5,6 +5,7 @@ import type {
   EmployeeUpdatePayload,
   EmployeeFilterParams,
   CSVImportSummary,
+  CSVValidationResponse,
 } from '../../types'
 
 export const employeeApi = baseApi.injectEndpoints({
@@ -78,6 +79,13 @@ export const employeeApi = baseApi.injectEndpoints({
         { type: 'Employee', id: 'LIST' },
       ],
     }),
+    validateEmployeesCsv: builder.mutation<CSVValidationResponse, string>({
+      query: (csv_content) => ({
+        url: '/employees/csv-validate',
+        method: 'POST',
+        body: { csv_content },
+      }),
+    }),
     importEmployeesCsv: builder.mutation<CSVImportSummary, string>({
       query: (csv_content) => ({
         url: '/employees/csv-import',
@@ -86,7 +94,9 @@ export const employeeApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [
         { type: 'Employee', id: 'LIST' },
+        { type: 'User', id: 'LIST' },
         { type: 'Team', id: 'LIST' },
+        { type: 'Asset', id: 'LIST' },
       ],
     }),
   }),
@@ -99,5 +109,6 @@ export const {
   useUpdateEmployeeMutation,
   useUpdateEmployeeStatusMutation,
   useDeleteEmployeeMutation,
+  useValidateEmployeesCsvMutation,
   useImportEmployeesCsvMutation,
 } = employeeApi

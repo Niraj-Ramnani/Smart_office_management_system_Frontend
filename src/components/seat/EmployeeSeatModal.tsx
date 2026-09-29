@@ -7,6 +7,7 @@ interface EmployeeSeatModalProps {
   onClose: () => void
   onRequestSeat: (seat: Seat, type: SeatRequestType) => void
   currentEmployeeId: number | null
+  hasAssignedSeat?: boolean
 }
 
 export const EmployeeSeatModal: React.FC<EmployeeSeatModalProps> = ({
@@ -15,6 +16,7 @@ export const EmployeeSeatModal: React.FC<EmployeeSeatModalProps> = ({
   onClose,
   onRequestSeat,
   currentEmployeeId,
+  hasAssignedSeat = true,
 }) => {
   if (!isOpen || !seat) return null
 
@@ -129,7 +131,7 @@ export const EmployeeSeatModal: React.FC<EmployeeSeatModalProps> = ({
               <button
                 type="button"
                 onClick={() =>
-                  onRequestSeat(seat, currentEmployeeId ? 'RELOCATION' : 'NEW_SEAT')
+                  onRequestSeat(seat, hasAssignedSeat ? 'RELOCATION' : 'NEW_SEAT')
                 }
                 className="flex-1 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold shadow-xs transition"
               >

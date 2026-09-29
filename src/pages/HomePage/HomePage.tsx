@@ -14,23 +14,23 @@ export const HomePage: React.FC = () => {
   } = useHomePage()
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       <PageHeader
         title="Workspace Overview"
         subtitle="Real-time operational summary across facilities, departments, and user provisioning."
       />
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="bg-white p-6 rounded-xl border border-slate-200 animate-pulse h-32"
+              className="bg-white p-6 rounded-xl border border-slate-200 animate-pulse h-36"
             />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           <StatCard
             to="/buildings"
             label="Buildings"

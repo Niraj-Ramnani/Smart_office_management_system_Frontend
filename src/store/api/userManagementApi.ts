@@ -80,6 +80,16 @@ export const userManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'User', id: 'LIST' }],
     }),
+    deleteUser: builder.mutation<{ message: string }, number>({
+      query: (userId) => ({
+        url: `/users/${userId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [
+        { type: 'User', id: 'LIST' },
+        { type: 'Employee', id: 'LIST' },
+      ],
+    }),
   }),
 })
 
@@ -91,4 +101,5 @@ export const {
   useAssignUserEmployeeMutation,
   useUpdateUserRoleMutation,
   useUpdateUserStatusMutation,
+  useDeleteUserMutation,
 } = userManagementApi

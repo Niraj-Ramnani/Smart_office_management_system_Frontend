@@ -3,7 +3,7 @@ import type { Configuration, RedirectRequest, SilentRequest } from '@azure/msal-
 
 const clientId = import.meta.env.VITE_AZURE_CLIENT_ID
 const tenantId = import.meta.env.VITE_AZURE_TENANT_ID
-const redirectUri = import.meta.env.VITE_AZURE_REDIRECT_URI 
+const redirectUri = import.meta.env.VITE_AZURE_REDIRECT_URI
 const postLogoutRedirectUri = import.meta.env.VITE_AZURE_POST_LOGOUT_REDIRECT_URI
 export const apiScope = import.meta.env.VITE_AZURE_API_SCOPE || `api://${clientId}/access_as_user`
 

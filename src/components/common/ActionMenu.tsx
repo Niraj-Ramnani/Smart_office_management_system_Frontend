@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 
 export interface ActionMenuItem {
   label: string
@@ -23,19 +24,69 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   align = 'right',
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const updatePosition = useCallback(() => {
+    if (!buttonRef.current) return
+    const rect = buttonRef.current.getBoundingClientRect()
+    const menuWidth = 160
+    const approxHeight = items.length * 36 + 16
+
+    let top = rect.bottom + 4
+    if (rect.bottom + approxHeight > window.innerHeight && rect.top - approxHeight > 0) {
+      top = rect.top - approxHeight - 4
+    }
+
+    let left = align === 'right' ? rect.right - menuWidth : rect.left
+    if (left + menuWidth > window.innerWidth - 8) {
+      left = window.innerWidth - menuWidth - 8
+    }
+    if (left < 8) {
+      left = 8
+    }
+
+    setCoords({ top, left })
+  }, [items.length, align])
+
+  const handleToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!isOpen) {
+      updatePosition()
+      setIsOpen(true)
+    } else {
+      setIsOpen(false)
+    }
+  }
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    if (!isOpen) return
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as Node
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(target) &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(target)
+      ) {
         setIsOpen(false)
       }
     }
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
+
+    const handleScrollOrResize = () => {
+      setIsOpen(false)
     }
+
+    document.addEventListener('mousedown', handleOutsideClick)
+    window.addEventListener('scroll', handleScrollOrResize, true)
+    window.addEventListener('resize', handleScrollOrResize)
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('mousedown', handleOutsideClick)
+      window.removeEventListener('scroll', handleScrollOrResize, true)
+      window.removeEventListener('resize', handleScrollOrResize)
     }
   }, [isOpen])
 
@@ -45,7 +96,6 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
   return (
     <div
       className="inline-flex items-center gap-1.5 relative text-left"
-      ref={menuRef}
       onClick={(e) => e.stopPropagation()}
     >
       {primaryAction && (
@@ -62,8 +112,9 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
       {items.length > 0 && (
         <div>
           <button
+            ref={buttonRef}
             type="button"
-            onClick={() => setIsOpen((prev) => !prev)}
+            onClick={handleToggle}
             aria-label="Actions"
             className="p-1 rounded-md text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 bg-white transition-colors cursor-pointer"
           >
@@ -72,49 +123,60 @@ export const ActionMenu: React.FC<ActionMenuProps> = ({
             </svg>
           </button>
 
-          {isOpen && (
-            <div
-              className={`absolute top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-slate-200/90 py-1 z-30 animate-in fade-in duration-100 ${
-                align === 'right' ? 'right-0' : 'left-0'
-              }`}
-            >
-              {standardItems.map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  disabled={item.disabled}
-                  onClick={() => {
-                    setIsOpen(false)
-                    item.onClick()
-                  }}
-                  className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer disabled:opacity-50"
-                >
-                  {item.label}
-                </button>
-              ))}
+          {isOpen &&
+            coords &&
+            createPortal(
+              <div
+                ref={dropdownRef}
+                style={{
+                  position: 'fixed',
+                  top: `${coords.top}px`,
+                  left: `${coords.left}px`,
+                  zIndex: 99999,
+                }}
+                className="w-40 bg-white rounded-lg shadow-xl border border-slate-200/95 py-1 animate-in fade-in duration-100"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {standardItems.map((item, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    disabled={item.disabled}
+                    onClick={() => {
+                      setIsOpen(false)
+                      item.onClick()
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    {item.label}
+                  </button>
+                ))}
 
-              {destructiveItems.length > 0 && standardItems.length > 0 && (
-                <div className="my-1 border-t border-slate-100" />
-              )}
+                {destructiveItems.length > 0 && standardItems.length > 0 && (
+                  <div className="my-1 border-t border-slate-100" />
+                )}
 
-              {destructiveItems.map((item, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  disabled={item.disabled}
-                  onClick={() => {
-                    setIsOpen(false)
-                    item.onClick()
-                  }}
-                  className="w-full text-left px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50 font-medium"
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-          )}
+                {destructiveItems.map((item, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    disabled={item.disabled}
+                    onClick={() => {
+                      setIsOpen(false)
+                      item.onClick()
+                    }}
+                    className="w-full text-left px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50 font-medium"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>,
+              document.body
+            )}
         </div>
       )}
     </div>
   )
 }
+
+export default ActionMenu

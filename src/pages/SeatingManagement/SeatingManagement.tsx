@@ -5,6 +5,7 @@ import type { RootState } from '../../store/store'
 import {
   useGetFloorSeatingMapQuery,
   useGetSeatingOverviewQuery,
+  useListSeatsQuery,
 } from '../../store/api/seatApi'
 import type { Seat, SeatRequestType } from '../../types'
 import { SeatingOverviewCards } from '../../components/seat/SeatingOverviewCards'
@@ -13,7 +14,7 @@ import { FloorMapGrid } from '../../components/seat/FloorMapGrid'
 import { SeatActionModal } from '../../components/seat/SeatActionModal'
 import { SeatHistoryModal } from '../../components/seat/SeatHistoryModal'
 import { EmployeeSeatModal } from '../../components/seat/EmployeeSeatModal'
-import { SeatRequestModal } from '../../components/seatRequest/SeatRequestModal'
+import { SeatRequestModal, type InitialSeatInfo } from '../../components/seatRequest/SeatRequestModal'
 import { AddSeatModal } from '../../components/seat/AddSeatModal'
 
 export const SeatingManagement: React.FC = () => {
@@ -36,11 +37,20 @@ export const SeatingManagement: React.FC = () => {
   const [requestModalOpen, setRequestModalOpen] = useState(false)
   const [requestModalProps, setRequestModalProps] = useState<{
     initialType?: SeatRequestType
-    initialSeat?: { id: number; seat_number: string } | null
+    initialSeat?: InitialSeatInfo | null
     initialTargetEmployeeId?: number | null
   }>({})
 
-  const { data: overview, isLoading: isOverviewLoading } = useGetSeatingOverviewQuery()
+  const { data: allSeats = [] } = useListSeatsQuery(undefined, {
+    pollingInterval: 12000,
+  })
+  const hasAssignedSeat = Boolean(
+    currentEmployeeId && allSeats.some((s) => s.employee_id === currentEmployeeId)
+  )
+
+  const { data: overview, isLoading: isOverviewLoading } = useGetSeatingOverviewQuery(undefined, {
+    pollingInterval: 12000,
+  })
 
   const activeBuildingId =
     selectedBuildingId || queryBuildingId || overview?.buildings[0]?.building_id || null
@@ -56,7 +66,7 @@ export const SeatingManagement: React.FC = () => {
 
   const { data: floorMap, isLoading: isMapLoading } = useGetFloorSeatingMapQuery(
     activeFloorId || 0,
-    { skip: !activeFloorId }
+    { skip: !activeFloorId, pollingInterval: 12000 }
   )
 
   const handleSelectSeat = (seat: Seat) => {
@@ -83,12 +93,19 @@ export const SeatingManagement: React.FC = () => {
 
   const handleEmployeeRequestSeat = (seat: Seat, type: SeatRequestType) => {
     setSelectedSeat(null)
+    const isOwnSeat = Boolean(currentEmployeeId && seat.employee_id === currentEmployeeId)
     setRequestModalProps({
       initialType: type,
-      initialSeat:
-        type === 'NEW_SEAT' || type === 'RELOCATION'
-          ? { id: seat.id, seat_number: seat.seat_number }
-          : null,
+      initialSeat: isOwnSeat
+        ? null
+        : {
+            id: seat.id,
+            seat_number: seat.seat_number,
+            floor_id: seat.floor_id,
+            status: seat.status,
+            employee_id: seat.employee_id,
+            employee_name: seat.employee_name,
+          },
       initialTargetEmployeeId: type === 'SWAP' ? seat.employee_id : null,
     })
     setRequestModalOpen(true)
@@ -96,16 +113,16 @@ export const SeatingManagement: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs">
+      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-orange-500" />
-              <h1 className="text-base font-bold text-slate-900 tracking-tight">
+            <div className="flex items-center gap-2.5">
+              <span className="w-3 h-3 rounded-full bg-orange-500 shrink-0" />
+              <h1 className="text-[20px] font-bold text-slate-900 tracking-tight">
                 {isEmployee ? 'Floor Seating Map' : 'Seating Floor Map & Management'}
               </h1>
             </div>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-[13px] text-slate-500 mt-1.5 ml-5.5">
               {isEmployee
                 ? 'Explore office seating, locate your workspace, or submit a seat request to your manager.'
                 : 'Select building and floor level to inspect desk occupancy, view capacity, or manage allocations.'}
@@ -245,10 +262,16 @@ export const SeatingManagement: React.FC = () => {
           onClose={() => setSelectedSeat(null)}
           onRequestSeat={handleEmployeeRequestSeat}
           currentEmployeeId={currentEmployeeId}
+          hasAssignedSeat={hasAssignedSeat}
         />
       )}
 
       <SeatRequestModal
+        key={
+          requestModalOpen
+            ? `seat-req-${requestModalProps.initialSeat?.id || 'none'}-${requestModalProps.initialType || 'reloc'}`
+            : 'closed'
+        }
         isOpen={requestModalOpen}
         onClose={() => setRequestModalOpen(false)}
         initialType={requestModalProps.initialType}

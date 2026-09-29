@@ -4,9 +4,12 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
   color: #0f172a;
   background-color: #f8fafc;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
 }
 
@@ -18,7 +21,10 @@ body {
   overflow: hidden;
 }
 
-/* ─── Custom Scrollbar ─── */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.01em;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -37,13 +43,11 @@ body {
   background: #94a3b8;
 }
 
-/* Firefox scrollbar */
 * {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e1 transparent;
 }
 
-/* ─── Smooth scroll for main content ─── */
 .main-scroll-area {
   overflow-y: auto;
   overflow-x: hidden;
@@ -67,7 +71,6 @@ body {
   background: #94a3b8;
 }
 
-/* ─── Sidebar scroll ─── */
 .sidebar-scroll {
   overflow-y: auto;
   overflow-x: hidden;
@@ -90,15 +93,13 @@ body {
   background: #cbd5e1;
 }
 
-/* ─── Table scroll containers ─── */
 .table-scroll {
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: visible;
 }
 
 .table-scroll::-webkit-scrollbar {
   height: 4px;
-  width: 4px;
 }
 
 .table-scroll::-webkit-scrollbar-track {
@@ -110,7 +111,6 @@ body {
   border-radius: 999px;
 }
 
-/* ─── Card / panel inner scroll ─── */
 .card-scroll {
   overflow-y: auto;
   overflow-x: hidden;
@@ -129,7 +129,6 @@ body {
   border-radius: 999px;
 }
 
-/* ─── Fade in animation ─── */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -145,7 +144,6 @@ body {
   animation: fadeInUp 0.25s ease-out both;
 }
 
-/* ─── Subtle pulse for loading states ─── */
 @keyframes subtlePulse {
   0%, 100% { opacity: 0.6; }
   50% { opacity: 1; }
@@ -153,4 +151,29 @@ body {
 
 .animate-subtle-pulse {
   animation: subtlePulse 1.8s ease-in-out infinite;
+}
+
+.section-divider {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 1.5rem 0;
+}
+
+table {
+  font-size: 13.5px;
+}
+
+th {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+button:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+input, select, textarea {
+  font-size: 13.5px;
 }

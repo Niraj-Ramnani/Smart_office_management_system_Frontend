@@ -24,7 +24,16 @@ export function validateEmployeeOnboardingPayload(payload: Partial<EmployeeCreat
 
 export function parseEmployeeCsvHeaders(headerLine: string): { valid: boolean; missing: string[] } {
   const headers = headerLine.split(',').map((h) => h.trim().toLowerCase())
-  const required = ['employee_code', 'first_name', 'last_name', 'email', 'designation', 'department', 'employment_type']
+  const required = [
+    'employee_code',
+    'first_name',
+    'last_name',
+    'email',
+    'entra_oid',
+    'designation',
+    'department',
+    'employment_type',
+  ]
   const missing = required.filter((col) => !headers.includes(col))
   return { valid: missing.length === 0, missing }
 }
@@ -76,16 +85,19 @@ describe('Single & Bulk Employee Onboarding Validation', () => {
     assert.strictEqual(error, 'Invalid application role selected')
   })
 
-  it('validates standard employee CSV headers including optional role and team', () => {
-    const valid = parseEmployeeCsvHeaders('employee_code,first_name,last_name,email,designation,department,employment_type,role,team_name')
+  it('validates standard employee CSV headers including entra_oid, optional role and team', () => {
+    const valid = parseEmployeeCsvHeaders(
+      'employee_code,first_name,last_name,email,entra_oid,designation,department,employment_type,role,team_name'
+    )
     assert.strictEqual(valid.valid, true)
     assert.strictEqual(valid.missing.length, 0)
   })
 
-  it('detects missing required columns in employee CSV', () => {
+  it('detects missing required columns including entra_oid in employee CSV', () => {
     const result = parseEmployeeCsvHeaders('first_name,last_name,email,role')
     assert.strictEqual(result.valid, false)
     assert.ok(result.missing.includes('employee_code'))
+    assert.ok(result.missing.includes('entra_oid'))
     assert.ok(result.missing.includes('department'))
   })
 })

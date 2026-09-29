@@ -64,10 +64,13 @@ export const AssetManagement: React.FC = () => {
     action: 'RETURN' | 'MAINTENANCE'
   } | null>(null)
 
-  const { data: allAssets = [], isLoading } = useGetAssetsQuery({
-    search: search || undefined,
-    status: statusFilter || undefined,
-  })
+  const { data: allAssets = [], isLoading } = useGetAssetsQuery(
+    {
+      search: search || undefined,
+      status: statusFilter || undefined,
+    },
+    { pollingInterval: 12000 }
+  )
 
   const { data: activeEmployees = [] } = useGetEmployeesQuery({
     employee_status: 'ACTIVE',

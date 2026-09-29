@@ -191,4 +191,3 @@ export const useTeamManagement = () => {
     handleRemoveMember,
   }
 }
-
