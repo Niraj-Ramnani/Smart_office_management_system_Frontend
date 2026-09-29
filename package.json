@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "itt-deskflow",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,9 +7,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "node --test src/tests/**/*.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/msal-browser": "^5.22.0",
+    "@azure/msal-react": "^5.7.1",
     "@reduxjs/toolkit": "^2.12.0",
     "@tailwindcss/vite": "^4.3.3",
     "react": "^19.2.8",
